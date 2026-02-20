@@ -83,7 +83,7 @@ const MobileHero = () => {
         <div className="flex flex-col gap-3 w-full max-w-xs mx-auto">
           <MagneticButton variant="primary" size="lg" className="w-full">Start Capturing Leads</MagneticButton>
           <a href="/Pricing" className="w-full">
-             <MagneticButton variant="secondary" size="lg" className="w-full">How It Works</MagneticButton>
+             <MagneticButton variant="secondary" size="lg" className="w-full">View Pricing</MagneticButton>
           </a>
         </div>
       </motion.div>
@@ -247,7 +247,7 @@ const DesktopHero = () => {
                 <div className="flex flex-row gap-4 items-center">
                     <MagneticButton variant="primary" size="lg" className="shadow-xl shadow-gray-200/50">Start Capturing Leads</MagneticButton>
                     <a href="/Pricing">
-                       <MagneticButton variant="secondary" size="lg">View Pricing</MagneticButton>
+                       <MagneticButton variant="secondary" size="lg">How It Works</MagneticButton>
                     </a>
                 </div>
             </motion.div>
