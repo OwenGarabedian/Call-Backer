@@ -53,7 +53,7 @@ const PoshCard = ({ children, className = "" }: { children: React.ReactNode, cla
   </div>
 );
 
-// --- 2. MOBILE NATIVE LAYOUT (The fix for your white space issue) ---
+// --- 2. MOBILE NATIVE LAYOUT (Zero Phone Mockup) ---
 const MobileHero = () => {
   return (
     <div className="relative w-full bg-[#FAFAFA] flex flex-col items-center pt-28 pb-16 px-4 overflow-hidden lg:hidden">
@@ -62,7 +62,7 @@ const MobileHero = () => {
       <div className="absolute inset-0 opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] pointer-events-none" />
 
       {/* Hero Text */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center relative z-10 w-full mb-10">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center relative z-10 w-full mb-12">
         <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-6 bg-white border border-gray-200 shadow-sm mx-auto">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -82,15 +82,10 @@ const MobileHero = () => {
 
         <div className="flex flex-col gap-3 w-full max-w-xs mx-auto">
           <MagneticButton variant="primary" size="lg" className="w-full">Start Capturing Leads</MagneticButton>
-          <MagneticButton variant="secondary" size="lg" className="w-full">How It Works</MagneticButton>
+          <a href="/Pricing" className="w-full">
+             <MagneticButton variant="secondary" size="lg" className="w-full">View Pricing</MagneticButton>
+          </a>
         </div>
-      </motion.div>
-
-      {/* Mobile Phone Mockup (Scaled Down & Static, No scrolling collisions) */}
-      <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="w-full flex justify-center z-10 mb-16 h-[480px] sm:h-[550px] relative pointer-events-none">
-         <div className="absolute top-0 origin-top scale-[0.65] sm:scale-[0.8]">
-            <PhoneMockup scrollUp={0} stopFloating={false} />
-         </div>
       </motion.div>
 
       {/* Cards - Elegant Native Scroll Fade */}
@@ -153,11 +148,13 @@ const MobileHero = () => {
               Make your phone <br /><span className="italic font-serif text-gray-400">your best employee.</span>
           </h2>
           <div className="w-full max-w-xs mx-auto flex flex-col items-center gap-4">
-              <MagneticButton variant="primary" size="lg" className="w-full bg-[#111] text-white overflow-hidden relative group p-3">
-                  <span className="relative z-10 flex items-center justify-center gap-2">
-                     Maximize Your Revenue <Smartphone className="w-4 h-4 text-purple-400" />
-                  </span>
-              </MagneticButton>
+              <a href="/Pricing" className="w-full">
+                  <MagneticButton variant="primary" size="lg" className="w-full bg-[#111] text-white overflow-hidden relative group p-3">
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                         Maximize Your Revenue <Smartphone className="w-4 h-4 text-purple-400" />
+                      </span>
+                  </MagneticButton>
+              </a>
               <p className="text-xs text-neutral-400 font-medium">Capture every opportunity</p>
           </div>
       </motion.div>
@@ -249,7 +246,9 @@ const DesktopHero = () => {
                 </p>
                 <div className="flex flex-row gap-4 items-center">
                     <MagneticButton variant="primary" size="lg" className="shadow-xl shadow-gray-200/50">Start Capturing Leads</MagneticButton>
-                    <MagneticButton variant="secondary" size="lg">How It Works</MagneticButton>
+                    <a href="/Pricing">
+                       <MagneticButton variant="secondary" size="lg">View Pricing</MagneticButton>
+                    </a>
                 </div>
             </motion.div>
         </div>
@@ -280,12 +279,14 @@ const DesktopHero = () => {
                     Make your phone <br /><span className="italic font-serif text-gray-400">your best employee.</span>
                 </h2>
                 <div className="flex flex-col items-center gap-6">
-                    <MagneticButton variant="primary" size="lg" className="group relative min-w-[260px] overflow-hidden bg-[#111] border border-white/10 shadow-[0_20px_50px_-12px_rgba(124,58,237,0.2)] hover:shadow-[0_20px_50px_-12px_rgba(124,58,237,0.4)] transition-all duration-500 p-3">
-                        <span className="relative z-10 flex items-center justify-center gap-3 text-white">
-                            <span className="text-lg font-medium tracking-wide">Maximize Your Revenue</span><Smartphone className="w-5 h-5 text-purple-400 group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300" strokeWidth={2.5} />
-                        </span>
-                        <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                    </MagneticButton>
+                    <a href="/Pricing">
+                        <MagneticButton variant="primary" size="lg" className="group relative min-w-[260px] overflow-hidden bg-[#111] border border-white/10 shadow-[0_20px_50px_-12px_rgba(124,58,237,0.2)] hover:shadow-[0_20px_50px_-12px_rgba(124,58,237,0.4)] transition-all duration-500 p-3">
+                            <span className="relative z-10 flex items-center justify-center gap-3 text-white">
+                                <span className="text-lg font-medium tracking-wide">Maximize Your Revenue</span><Smartphone className="w-5 h-5 text-purple-400 group-hover:text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300" strokeWidth={2.5} />
+                            </span>
+                            <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                        </MagneticButton>
+                    </a>
                     <p className="text-sm text-neutral-400 font-medium">Capture every opportunity</p>
                 </div>
             </div>
