@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Calculator, Lock, Bot, MessageSquare, Calendar, Phone, Database, Check, Plus, Minus } from "lucide-react";
+import { Calculator, Lock, Bot, MessageSquare, Calendar, Phone, Database, Check, Plus, Minus, ArrowLeft } from "lucide-react"; // <-- Added ArrowLeft
 import Lenis from "@studio-freight/lenis";
 
 // Import your site-wide components
@@ -147,8 +147,15 @@ const FAQItem = ({ faq, index }: { faq: typeof faqs[0]; index: number }) => {
 
 export const Pricing = () => {
   return (
-    <div className="pt-32 pb-20">
-      {/* HEADER SECTION - NO CHANGES */}
+    <div className="pt-32 pb-20 relative">
+      
+      <div className="max-w-7xl mx-auto px-6 mb-12">
+        <a href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Home Page
+            </a>
+      </div>
+      
+      {/* HEADER SECTION */}
       <div className="max-w-6xl mx-auto px-6 text-center mb-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -171,7 +178,7 @@ export const Pricing = () => {
         </p>
       </div>
 
-      {/* PRICING CARDS - UPDATED LOGIC */}
+      {/* PRICING CARDS */}
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
         {plans.map((plan, i) => (
           <motion.div
@@ -188,7 +195,6 @@ export const Pricing = () => {
                 : "bg-white text-neutral-900 border border-neutral-200 opacity-80"
             }`}
           >
-             {/* COMING SOON OVERLAY */}
              {plan.comingSoon && (
                <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-[2px] flex flex-col items-center justify-center text-center p-6">
                  <div className="bg-neutral-100 p-4 rounded-full mb-4">
