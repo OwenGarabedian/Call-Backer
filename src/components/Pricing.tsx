@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Calculator, Lock, Bot, MessageSquare, Calendar, Phone, Database, Check, Plus, Minus, ArrowLeft } from "lucide-react"; // <-- Added ArrowLeft
+import { Calculator, Lock, Bot, MessageSquare, Calendar, Phone, Database, Check, Plus, Minus, ArrowLeft } from "lucide-react";
 import Lenis from "@studio-freight/lenis";
 
 // Import your site-wide components
@@ -149,10 +149,18 @@ export const Pricing = () => {
   return (
     <div className="pt-32 pb-20 relative">
       
-      <div className="max-w-7xl mx-auto px-6 mb-12">
-        <a href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Home Page
-            </a>
+      {/* --- BACK BUTTON (MOBILE ONLY, STANDARD HTML ANCHOR) --- */}
+      <div className="max-w-6xl mx-auto px-6 mb-8 flex md:hidden justify-start">
+        <a href="/" className="inline-block">
+          <motion.div
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-neutral-200 shadow-sm text-sm font-medium text-neutral-600 hover:text-neutral-900 hover:bg-neutral-50 transition-all active:scale-95"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Home
+          </motion.div>
+        </a>
       </div>
       
       {/* HEADER SECTION */}
