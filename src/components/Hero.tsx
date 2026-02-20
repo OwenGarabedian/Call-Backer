@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-mot
 import { PhoneMockup } from "./PhoneMockup";
 import { MagneticButton } from "./ui/magnetic-button";
 import { useRef, useState } from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { Zap, TrendingUp, Clock, ArrowUpRight, CheckCircle2, Hammer, HardHat, ShieldCheck, Snowflake, Wrench, Smartphone } from "lucide-react"; 
 
 // --- 1. LOCAL HERO MARQUEE ---
@@ -65,6 +66,8 @@ const HeroMarquee = () => (
 // --- 2. PHONE WRAPPER ---
 const PhoneContainer = ({ scrollYProgress, scrollUp }: { scrollYProgress: any, scrollUp: any }) => {
   const [isScrolling, setIsScrolling] = useState(false);
+  const isMobile = useIsMobile(); // <-- Using your existing hook!
+
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     if (typeof latest === "number") {
       if (latest > 0.01 && !isScrolling) setIsScrolling(true);
@@ -72,10 +75,22 @@ const PhoneContainer = ({ scrollYProgress, scrollUp }: { scrollYProgress: any, s
     }
   });
 
-  const phoneX = useTransform(scrollYProgress, [0.1, 0.5], ["20vw", "0vw"]); 
+  // On mobile, keep it centered. On desktop, shift it right.
+  const phoneX = useTransform(
+    scrollYProgress, 
+    [0.1, 0.5], 
+    isMobile ? ["0vw", "0vw"] : ["20vw", "0vw"]
+  ); 
+  
   const phoneRotateZ = useTransform(scrollYProgress, [0.1, 0.55], ["0deg", "-90deg"]);
   const phoneRotateY = useTransform(scrollYProgress, [0.1, 0.55], ["-15deg", "0deg"]);
-  const phoneScale = useTransform(scrollYProgress, [0.15, 0.55], [1, 5.5]); 
+  
+  // Dramatically reduce the final scale on mobile so it doesn't crush the screen
+  const phoneScale = useTransform(
+    scrollYProgress, 
+    [0.15, 0.55], 
+    isMobile ? [1, 2.5] : [1, 5.5]
+  ); 
 
   return (
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 perspective-1000">
