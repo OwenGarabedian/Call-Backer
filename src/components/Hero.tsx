@@ -83,7 +83,7 @@ const MobileHero = () => {
         <div className="flex flex-col gap-3 w-full max-w-xs mx-auto">
           <MagneticButton variant="primary" size="lg" className="w-full">Start Capturing Leads</MagneticButton>
           <a href="/Pricing" className="w-full">
-             <MagneticButton variant="secondary" size="lg" className="w-full">View Pricing</MagneticButton>
+             <MagneticButton variant="secondary" size="lg" className="w-full">How It Works</MagneticButton>
           </a>
         </div>
       </motion.div>
