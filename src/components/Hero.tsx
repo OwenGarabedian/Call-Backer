@@ -66,7 +66,7 @@ const HeroMarquee = () => (
 // --- 2. PHONE WRAPPER ---
 const PhoneContainer = ({ scrollYProgress, scrollUp }: { scrollYProgress: any, scrollUp: any }) => {
   const [isScrolling, setIsScrolling] = useState(false);
-  const isMobile = useIsMobile(); // <-- Using your existing hook!
+  const isMobile = useIsMobile();
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     if (typeof latest === "number") {
@@ -75,29 +75,35 @@ const PhoneContainer = ({ scrollYProgress, scrollUp }: { scrollYProgress: any, s
     }
   });
 
-  // On mobile, keep it centered. On desktop, shift it right.
   const phoneX = useTransform(
     scrollYProgress, 
     [0.1, 0.5], 
     isMobile ? ["0vw", "0vw"] : ["20vw", "0vw"]
   ); 
   
+  // NEW: Push the phone down 25vh on mobile so the text is readable above it
+  const phoneY = useTransform(
+    scrollYProgress, 
+    [0.1, 0.5], 
+    isMobile ? ["25vh", "0vh"] : ["0vh", "0vh"]
+  );
+
   const phoneRotateZ = useTransform(scrollYProgress, [0.1, 0.55], ["0deg", "-90deg"]);
   const phoneRotateY = useTransform(scrollYProgress, [0.1, 0.55], ["-15deg", "0deg"]);
   
-  // Dramatically reduce the final scale on mobile so it doesn't crush the screen
+  // UPDATED: Dramatically reduce the mobile scale so it doesn't take over the screen
   const phoneScale = useTransform(
     scrollYProgress, 
     [0.15, 0.55], 
-    isMobile ? [1, 2.5] : [1, 5.5]
+    isMobile ? [0.85, 1.2] : [1, 5.5] 
   ); 
 
   return (
     <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 perspective-1000">
-      {/* Forced hardware acceleration and prevented repaints */}
       <motion.div 
         style={{ 
             x: phoneX, 
+            y: phoneY, // <-- Added phoneY here
             rotateZ: phoneRotateZ, 
             rotateY: phoneRotateY, 
             scale: phoneScale, 

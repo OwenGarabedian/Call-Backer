@@ -8,13 +8,16 @@ export const Header = () => {
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
-      className="fixed top-0 left-0 right-0 z-50 px-6 py-4"
+      // Reduced padding on mobile, kept it standard on md+
+      className="fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-3 md:py-4" 
     >
       <div className="max-w-6xl mx-auto">
-        <div className="glass rounded-2xl px-6 py-3 flex items-center justify-between">
+        {/* Made it a tighter pill on mobile with less vertical padding */}
+        <div className="glass rounded-full md:rounded-2xl px-4 md:px-6 py-2 md:py-3 flex items-center justify-between">
+          
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-full md:rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
               <Phone className="w-4 h-4 text-primary" strokeWidth={1.5} />
             </div>
             <span className="font-display text-lg font-semibold hidden sm:block">Call Backer</span>
