@@ -148,7 +148,7 @@ const FAQItem = ({ faq, index }: { faq: typeof faqs[0]; index: number }) => {
 export const Pricing = () => {
   return (
     <div className="pt-32 pb-20">
-      {/* HEADER */}
+      {/* HEADER SECTION - NO CHANGES */}
       <div className="max-w-6xl mx-auto px-6 text-center mb-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -171,7 +171,7 @@ export const Pricing = () => {
         </p>
       </div>
 
-      {/* PRICING CARDS */}
+      {/* PRICING CARDS - UPDATED LOGIC */}
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
         {plans.map((plan, i) => (
           <motion.div
@@ -180,12 +180,15 @@ export const Pricing = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: i * 0.1 }}
-            className={`relative p-8 rounded-3xl flex flex-col overflow-hidden transition-all duration-300 ${
+            className={`relative p-8 rounded-3xl flex-col overflow-hidden transition-all duration-300 ${
+              plan.comingSoon ? "hidden md:flex" : "flex"
+            } ${
               plan.highlight && !plan.comingSoon
                 ? "bg-[#111] text-white shadow-2xl scale-105 z-10 ring-1 ring-white/10" 
                 : "bg-white text-neutral-900 border border-neutral-200 opacity-80"
             }`}
           >
+             {/* COMING SOON OVERLAY */}
              {plan.comingSoon && (
                <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-[2px] flex flex-col items-center justify-center text-center p-6">
                  <div className="bg-neutral-100 p-4 rounded-full mb-4">
