@@ -25,10 +25,10 @@ export const Header = () => {
 
           {/* Nav */}
           <nav className="hidden md:flex items-center gap-8">
-            <a href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <a href="/" className="text-m text-muted-foreground hover:text-foreground transition-colors">
               Home Page
             </a>
-            <a href="/Pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <a href="/Pricing" className="text-m text-muted-foreground hover:text-foreground transition-colors">
               Pricing
             </a>
           </nav>
