@@ -209,7 +209,7 @@ export const Pricing = () => {
                     <Lock className="w-6 h-6 text-neutral-400" />
                  </div>
                  <h3 className="text-xl font-bold text-neutral-900">Coming Soon</h3>
-                 <p className="text-sm text-neutral-500 mt-2">Invite-only.</p>
+                 <p className="text-sm text-neutral-500 mt-2">Join Waitlist.</p>
                </div>
              )}
 
