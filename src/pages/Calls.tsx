@@ -204,11 +204,8 @@ export default function Calls() {
         <header className="flex items-center justify-between px-6 py-4 border-b border-border glass-strong flex-shrink-0">
           <div>
             <h1 className="font-display text-xl font-bold">
-              {loading ? "Dashboard" : `Welcome, ${profile?.full_name ?? "there"}`}
+              {loading ? "Dashboard" : `Missed Calls`}
             </h1>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {profile?.business_name ?? "Here's what's happening with your calls today."}
-            </p>
           </div>
           <div className="flex items-center gap-2">
             <button className="w-9 h-9 rounded-xl border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors relative">

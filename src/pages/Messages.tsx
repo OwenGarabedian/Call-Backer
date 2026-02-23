@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { cn } from "@/lib/utils";
-import { Switch } from "@/components/ui/switch"; // Assuming shadcn switch exists
+import { Switch } from "@/components/ui/switch"; 
 
 // Types
 interface MessageItem {
@@ -171,14 +171,14 @@ export default function Messages() {
       conversationsMap.get(norm)!.push(m);
   });
   
-  // Sort conversations by latest message
+  // FIXED LOGIC: Sort conversations by latest message and safely copy arrays
   const conversations = Array.from(conversationsMap.entries()).map(([norm, msgs]) => {
-      // msgs are already sorted descending by created_at from DB
+      const latest = msgs[0]; // Capture newest BEFORE reversing
       return {
           normPhone: norm,
-          originalPhone: msgs[0].caller_id,
-          messages: msgs.reverse(), // Reverse to have oldest first for chat view
-          latestMessage: msgs[0] // Because it was descending, 0 is the newest
+          originalPhone: latest.caller_id,
+          messages: [...msgs].reverse(), // Use spread operator to avoid mutating the original array
+          latestMessage: latest
       }
   }).sort((a, b) => new Date(b.latestMessage.created_at).getTime() - new Date(a.latestMessage.created_at).getTime());
 
@@ -202,12 +202,12 @@ export default function Messages() {
           if (isCurrentlyOn) {
               // Turn OFF -> Add to blacklist
               newBlockedSet.add(normPhone);
-              setBlacklist(newBlockedSet); // optimistic update
+              setBlacklist(newBlockedSet); 
               await supabase.from("blacklist").insert({ user_id: userId, caller_id: originalPhone });
           } else {
               // Turn ON -> Remove from blacklist
               newBlockedSet.delete(normPhone);
-              setBlacklist(newBlockedSet); // optimistic update
+              setBlacklist(newBlockedSet); 
               await supabase.from("blacklist").delete().match({ user_id: userId, caller_id: originalPhone });
           }
       } catch (err) {
@@ -241,8 +241,6 @@ export default function Messages() {
     
     const textToSend = inputMessage;
     setInputMessage("");
-    
-    // Optimistic UI update could go here, but realtime sync usually catches it fast enough
     
     callN8nWebhook(activeConvo.originalPhone, textToSend);
   };
@@ -371,7 +369,6 @@ export default function Messages() {
                                 <span className="text-[10px] font-bold text-muted-foreground tracking-wider uppercase">Auto AI</span>
                                 <Switch 
                                     checked={!blacklist.has(activeConversation.normPhone)}
-                                    // Make sure you have a standard shadcn Switch component that accepts `checked` and `onCheckedChange`
                                     onCheckedChange={() => toggleAutoText(activeConversation.normPhone, activeConversation.originalPhone, !blacklist.has(activeConversation.normPhone))}
                                     className="ml-1 scale-75"
                                 />
@@ -385,12 +382,20 @@ export default function Messages() {
                     {/* Chat Messages */}
                     <div className="flex-1 overflow-y-auto p-6 space-y-6 flex flex-col">
                         {activeConversation.messages.map((msg, idx) => {
-                            const isOutbound = 
-                                (msg.direction && msg.direction.toLowerCase().includes("outbound")) || 
-                                (msg.status && ["sent", "delivered", "undelivered", "failed"].includes(msg.status.toLowerCase()));
+                            
+                            // FIXED LOGIC: Strict check for inbound. Anything else is outbound.
+                            const isInbound = 
+                                msg.direction?.toLowerCase() === "inbound" || 
+                                msg.status?.toLowerCase() === "received";
+                            const isOutbound = !isInbound;
                                 
-                            const showAvatar = !isOutbound && (idx === activeConversation.messages.length - 1 || 
-                                (activeConversation.messages[idx+1]?.direction && activeConversation.messages[idx+1].direction!.toLowerCase().includes("outbound")));
+                            // Determine if the next message in the sequence is also outbound
+                            const nextMsg = activeConversation.messages[idx + 1];
+                            const isNextMessageOutbound = nextMsg 
+                                ? !(nextMsg.direction?.toLowerCase() === "inbound" || nextMsg.status?.toLowerCase() === "received")
+                                : true; // If there is no next message, act like it's outbound so the avatar renders
+
+                            const showAvatar = !isOutbound && (idx === activeConversation.messages.length - 1 || isNextMessageOutbound);
                             
                             return (
                                 <motion.div 
