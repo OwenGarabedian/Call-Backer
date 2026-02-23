@@ -231,7 +231,7 @@ const DesktopHero = () => {
         </motion.div>
 
         {/* Hero Entry */}
-        <div className="relative z-10 w-full h-full max-w-7xl mx-auto px-6 grid grid-cols-2 items-center pointer-events-none">
+        <div className="relative z-10 w-full h-full max-w-7xl mx-auto px-6 grid grid-cols-2 items-center pointer-events-none pt-20">
             <motion.div style={{ opacity: textOpacity, y: textY, scale: textScale, translateZ: 0 }} className="text-left pointer-events-auto relative">
                 <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-8 bg-white border border-gray-200 shadow-[0_2px_8px_rgba(0,0,0,0.04)]">
                     <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
@@ -254,14 +254,14 @@ const DesktopHero = () => {
         </div>
 
         {/* 3D Phone */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 perspective-1000">
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 perspective-1000 pt-20">
           <motion.div style={{ x: phoneX, rotateZ: phoneRotateZ, rotateY: phoneRotateY, scale: phoneScale, translateZ: 0 }} className="origin-center">
                <PhoneMockup scrollUp={notificationY} stopFloating={isScrolling} />
            </motion.div>
         </div>
 
         {/* Cards */}
-        <div className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none">
+        <div className="absolute inset-0 z-30 flex items-center justify-center pointer-events-none pt-20">
             <div className="relative w-full max-w-5xl px-6 pointer-events-auto">
                 <div className="grid grid-cols-2 gap-6 w-full">
                     <motion.div style={{ opacity: c1Opacity, y: c1Y, x: c1X }}><PoshCard><div className="flex flex-col h-full justify-between"><div className="flex justify-between items-start"><div className="p-3 bg-gray-50 rounded-2xl border border-gray-100"><Zap className="w-5 h-5 text-gray-900" /></div><span className="text-[10px] font-mono uppercase tracking-wider text-gray-400 border border-gray-100 px-2 py-1 rounded-full">Speed</span></div><div><h3 className="text-2xl font-medium text-gray-900 tracking-tight mb-2">Zero Delay</h3><p className="text-gray-500 text-sm">Customers appreciate speed. Our AI responds in 2.5s.</p></div></div></PoshCard></motion.div>
