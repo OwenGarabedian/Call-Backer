@@ -380,7 +380,7 @@ export default function Messages() {
                     </header>
 
                     {/* Chat Messages */}
-                    <div className="flex-1 overflow-y-auto p-6 space-y-6 flex flex-col">
+                    <div className="flex-1 overflow-y-auto p-6 space-y-1.5 flex flex-col">
                         {activeConversation.messages.map((msg, idx) => {
                             
                             // FIXED LOGIC: Strict check for inbound. Anything else is outbound.
@@ -397,45 +397,59 @@ export default function Messages() {
 
                             const showAvatar = !isOutbound && (idx === activeConversation.messages.length - 1 || isNextMessageOutbound);
                             
+                            // Date Separator Logic
+                            const msgDate = new Date(msg.created_at).setHours(0,0,0,0);
+                            const prevMsgDate = idx > 0 ? new Date(activeConversation.messages[idx-1].created_at).setHours(0,0,0,0) : null;
+                            const showDateSeparator = msgDate !== prevMsgDate;
+                            
+                            const dateLabel = new Date(msg.created_at).toLocaleDateString([], { 
+                                weekday: 'short', month: 'short', day: 'numeric', year: new Date().getFullYear() !== new Date(msg.created_at).getFullYear() ? 'numeric' : undefined 
+                            });
+
                             return (
-                                <motion.div 
-                                    initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    transition={{ duration: 0.2 }}
-                                    key={msg.id} 
-                                    className={cn("flex max-w-[70%]", isOutbound ? "self-end justify-end" : "self-start justify-start")}
-                                >
-                                    {!isOutbound && (
-                                        <div className="w-6 flex-shrink-0 mr-2 items-end flex pb-1">
-                                            {showAvatar && (
-                                                <div className="w-6 h-6 rounded-full bg-secondary border border-border flex items-center justify-center text-muted-foreground">
-                                                    <User className="w-3 h-3" />
-                                                </div>
-                                            )}
+                                <div key={msg.id} className={cn("flex flex-col", showDateSeparator && idx > 0 ? "mt-4" : "")}>
+                                    {/* Date Separator */}
+                                    {showDateSeparator && (
+                                        <div className="flex justify-center mb-3 mt-1">
+                                            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-widest bg-secondary/50 px-3 py-1 rounded-full">
+                                                {dateLabel}
+                                            </span>
                                         </div>
                                     )}
                                     
-                                    <div className="flex flex-col gap-1">
-                                        <div 
-                                            className={cn(
-                                                "px-4 py-2.5 rounded-2xl text-[14px] leading-relaxed relative group", 
-                                                isOutbound 
-                                                    ? "bg-[#0A7CFF] text-white rounded-br-sm shadow-sm" 
-                                                    : "bg-white dark:bg-secondary border border-border text-foreground rounded-bl-sm shadow-sm"
-                                            )}
-                                        >
-                                            {msg.text || "Auto-reply sent"}
-                                            
-                                            {/* Hover Timestamp */}
-                                            <span className={cn(
-                                                "absolute top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity font-medium",
-                                                isOutbound ? "-left-12 pr-2" : "-right-12 pl-2"
-                                            )}>
-                                                {ChatMessageTime(msg.created_at)}
+                                    <motion.div 
+                                        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        transition={{ duration: 0.2 }}
+                                        className={cn("flex max-w-[70%]", isOutbound ? "self-end justify-end" : "self-start justify-start")}
+                                    >
+                                        {!isOutbound && (
+                                            <div className="w-6 flex-shrink-0 mr-2 items-end flex pb-3">
+                                                {showAvatar && (
+                                                    <div className="w-6 h-6 rounded-full bg-secondary border border-border flex items-center justify-center text-muted-foreground">
+                                                        <User className="w-3 h-3" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                        
+                                        <div className="flex flex-col gap-0.5 mt-0.5">
+                                            <div 
+                                                className={cn(
+                                                    "px-4 py-2 rounded-2xl text-[14px] leading-relaxed relative group shadow-sm", 
+                                                    isOutbound 
+                                                        ? "bg-[#0A7CFF] text-white rounded-br-sm" 
+                                                        : "bg-white dark:bg-secondary border border-border text-foreground rounded-bl-sm"
+                                                )}
+                                            >
+                                                {msg.text || "Auto-reply sent"}
+                                            </div>
+                                            <span className={cn("text-[9px] font-medium text-muted-foreground/70", isOutbound ? "self-end pr-1" : "self-start pl-1")}>
+                                                {ChatMessageTime(msg.created_at)} {msg.status?.toLowerCase() === 'failed' && <span className="text-red-500 ml-1">• Failed</span>}
                                             </span>
                                         </div>
-                                    </div>
-                                </motion.div>
+                                    </motion.div>
+                                </div>
                             )
                         })}
                         <div ref={messagesEndRef} />
