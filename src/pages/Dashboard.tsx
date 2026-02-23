@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, NavLink } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { useLocation, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   PhoneMissed,
   MessageSquare,
@@ -10,12 +10,9 @@ import {
   LayoutGrid,
   Layers,
   Phone,
-  TrendingUp,
-  ArrowRight,
   LogOut,
   Bell,
   CheckCircle2,
-  Clock,
   ChevronRight,
   BarChart3,
   User,
@@ -196,38 +193,43 @@ export default function Dashboard() {
       value: loading ? "—" : stats.totalCalls,
       sub: "Total captured",
       icon: PhoneMissed,
-      color: "#ef4444",
-      bg: "rgba(239,68,68,0.08)",
+      gradient: "linear-gradient(135deg, #ff6b6b 0%, #ef4444 40%, #dc2626 100%)",
       href: "/calls",
     },
     {
       title: "Messages Sent",
-      value: loading ? "—" : stats.totalMessages, 
+      value: loading ? "—" : stats.totalMessages,
       sub: "Auto-reply total",
       icon: MessageSquare,
-      color: "#22c55e",
-      bg: "rgba(34,197,94,0.08)",
+      gradient: "linear-gradient(135deg, #60a5fa 0%, #3b82f6 40%, #1d4ed8 100%)",
       href: "/messages",
     },
     {
       title: "Reply Rate",
-      value: loading ? "—" : `${stats.engagedPercent}%`, 
+      value: loading ? "—" : `${stats.engagedPercent}%`,
       sub: "Engaged leads",
-      icon: TrendingUp,
-      color: "#6366f1",
-      bg: "rgba(99,102,241,0.08)",
+      icon: BarChart3,
+      gradient: "linear-gradient(135deg, #c084fc 0%, #a855f7 40%, #7c3aed 100%)",
       href: "/messages",
     },
     {
       title: "Leads Captured",
-      value: loading ? "—" : stats.totalCustomers, 
+      value: loading ? "—" : stats.totalCustomers,
       sub: "Unique potential clients",
       icon: Zap,
-      color: "#f59e0b",
-      bg: "rgba(245,158,11,0.08)",
+      gradient: "linear-gradient(135deg, #fcd34d 0%, #f59e0b 40%, #d97706 100%)",
       href: "/database",
     },
   ];
+
+  // Deduplicate messages — keep only the most recent per unique caller_id
+  const uniqueMessages = Object.values(
+    messages.reduce((acc, msg) => {
+      const key = msg.caller_id ?? msg.id;
+      if (!acc[key]) acc[key] = msg;
+      return acc;
+    }, {} as Record<string, typeof messages[0]>)
+  ).slice(0, 4);
 
   return (
     <div className="flex h-screen overflow-hidden bg-gradient-main">
@@ -307,178 +309,175 @@ export default function Dashboard() {
         </header>
 
         {/* Scrollable body */}
-        <main className="flex-1 overflow-y-auto p-6 space-y-6">
+        <main className="flex-1 overflow-y-auto p-6 space-y-5">
 
           {/* ── KPI STAT CARDS ── */}
           <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-            {statCards.map(({ title, value, sub, icon: Icon, color, bg, href }, i) => (
+            {statCards.map(({ title, value, sub, icon: Icon, gradient, href }, i) => (
               <motion.button
                 key={title}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.07, duration: 0.4 }}
-                whileHover={{ y: -2 }}
+                whileHover={{ y: -2, scale: 1.01 }}
                 onClick={() => go(href)}
-                className="glass-strong rounded-2xl p-5 text-left border-x border-b border-border hover:border-foreground/15 transition-all shadow-sm group overflow-hidden relative"
-                style={{ borderTop: "none" }}
+                className="rounded-2xl p-7 text-left shadow-md group overflow-hidden relative"
+                style={{ background: gradient }}
               >
-                {/* Colored top accent bar */}
-                <div className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl" style={{ backgroundColor: color }} />
-
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: bg }}>
-                    <Icon className="w-5 h-5" style={{ color }} />
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <div className="text-4xl font-black font-display tabular-nums text-white leading-none">{value}</div>
+                    <div className="text-sm font-semibold text-white/85 mt-1.5">{title}</div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity mt-1" />
+                  <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-5 h-5 text-white" />
+                  </div>
                 </div>
-                <div className="text-2xl font-black font-display tabular-nums leading-none mb-1.5">{value}</div>
-                <div className="text-xs font-semibold" style={{ color }}>{title}</div>
-                <div className="text-[11px] text-muted-foreground mt-0.5">{sub}</div>
+                <div className="text-xs text-white/60 mt-3">{sub}</div>
               </motion.button>
             ))}
           </div>
 
-          {/* ── BOTTOM GRID ── */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+          {/* ── MAIN PANELS ── */}
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
 
-            {/* Recent Missed Calls — 2/3 */}
+            {/* Recent Activity (table style) */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.4 }}
-              className="xl:col-span-2 glass-strong rounded-2xl border border-border overflow-hidden shadow-sm"
+              className="glass-strong rounded-2xl border border-border overflow-hidden shadow-sm"
             >
               <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-                <div className="flex items-center gap-2">
-                  <PhoneMissed className="w-4 h-4 text-red-500" />
-                  <h2 className="font-display text-sm font-bold">Recent Missed Calls</h2>
-                </div>
+                <h2 className="font-display text-sm font-bold">Recent Activity</h2>
                 <button
                   onClick={() => go("/calls")}
-                  className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+                  className="text-xs text-indigo-500 font-semibold hover:text-indigo-600 transition-colors"
                 >
-                  View all <ArrowRight className="w-3 h-3" />
+                  View all
                 </button>
               </div>
 
+              {/* Table header */}
+              <div className="grid grid-cols-3 px-5 py-2 border-b border-border bg-black/[0.02]">
+                <span className="text-[11px] font-semibold text-muted-foreground">Caller ID</span>
+                <span className="text-[11px] font-semibold text-muted-foreground">Action Taken</span>
+                <span className="text-[11px] font-semibold text-muted-foreground text-right">Time ago</span>
+              </div>
+
               {loading ? (
-                <div className="flex items-center justify-center h-40 text-sm text-muted-foreground">Loading…</div>
+                <div className="flex items-center justify-center h-36 text-sm text-muted-foreground">Loading…</div>
               ) : calls.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-40 gap-2 text-muted-foreground">
+                <div className="flex flex-col items-center justify-center h-36 gap-2 text-muted-foreground">
                   <CheckCircle2 className="w-8 h-8 opacity-30" />
-                  <p className="text-sm">No missed calls yet</p>
+                  <p className="text-sm">No activity yet</p>
                 </div>
               ) : (
                 <div className="divide-y divide-border">
-                  {calls.slice(0, 7).map((call, i) => (
+                  {calls.slice(0, 6).map((call, i) => (
                     <motion.div
                       key={call.id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.35 + i * 0.04 }}
-                      className="flex items-center gap-4 px-5 py-3.5 hover:bg-primary/3 transition-colors"
+                      className="grid grid-cols-3 items-center px-5 py-3.5 hover:bg-black/[0.02] transition-colors"
                     >
-                      <div className="w-9 h-9 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
-                        <PhoneMissed className="w-4 h-4 text-red-500" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold">{formatPhone(call.phone_number_calling)}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {call.action ?? "missed"}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-3 flex-shrink-0">
-                        <span className="text-xs text-muted-foreground">{timeAgo(call.time)}</span>
-                        <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 font-medium">
-                          Missed
-                        </span>
-                      </div>
+                      <span className="text-xs font-semibold text-foreground">{formatPhone(call.phone_number_calling)}</span>
+                      <span className="text-xs text-muted-foreground capitalize">{call.action ?? "Texted"}</span>
+                      <span className="text-xs text-muted-foreground text-right">{timeAgo(call.time)}</span>
                     </motion.div>
                   ))}
                 </div>
               )}
             </motion.div>
 
-            {/* Right column */}
-            <div className="space-y-6">
-              {/* Recent Messages */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.38, duration: 0.4 }}
-                className="glass-strong rounded-2xl border border-border overflow-hidden shadow-sm"
-              >
-                <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-                  <div className="flex items-center gap-2">
-                    <MessageSquare className="w-4 h-4 text-green-500" />
-                    <h2 className="font-display text-sm font-bold">Recent Messages</h2>
-                  </div>
-                  <button
-                    onClick={() => go("/messages")}
-                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
-                  >
-                    View all <ArrowRight className="w-3 h-3" />
-                  </button>
-                </div>
+            {/* Recent Messages (deduplicated, table style) */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.38, duration: 0.4 }}
+              className="glass-strong rounded-2xl border border-border overflow-hidden shadow-sm"
+            >
+              <div className="flex items-center justify-between px-5 py-4 border-b border-border">
+                <h2 className="font-display text-sm font-bold">Recent Messages</h2>
+                <button
+                  onClick={() => go("/messages")}
+                  className="text-xs text-indigo-500 font-semibold hover:text-indigo-600 transition-colors"
+                >
+                  View all
+                </button>
+              </div>
 
-                {loading ? (
-                  <div className="flex items-center justify-center h-32 text-sm text-muted-foreground">Loading…</div>
-                ) : messages.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-32 gap-2 text-muted-foreground">
-                    <MessageSquare className="w-7 h-7 opacity-25" />
-                    <p className="text-xs">No messages yet</p>
-                  </div>
-                ) : (
-                  <div className="divide-y divide-border">
-                    {messages.slice(0, 4).map((msg, i) => (
-                      <div key={msg.id} className="flex items-start gap-3 px-5 py-3 hover:bg-primary/3 transition-colors">
-                        <div className="w-7 h-7 rounded-full bg-green-500/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <MessageSquare className="w-3.5 h-3.5 text-green-500" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold">{formatPhone(msg.caller_id)}</p>
-                          <p className="text-xs text-muted-foreground truncate">{msg.text ?? "Auto-reply sent"}</p>
-                          <div className="flex items-center gap-1.5 mt-1">
-                            <span className="text-[10px] text-muted-foreground capitalize">{msg.status ?? "sent"}</span>
-                            <span className="text-[10px] text-muted-foreground">· {timeAgo(msg.created_at)}</span>
+              {/* Table header */}
+              <div className="grid grid-cols-[1fr_auto_auto] px-5 py-2 border-b border-border bg-black/[0.02] gap-4">
+                <span className="text-[11px] font-semibold text-muted-foreground">Message</span>
+                <span className="text-[11px] font-semibold text-muted-foreground">Sender</span>
+                <span className="text-[11px] font-semibold text-muted-foreground">Time</span>
+              </div>
+
+              {loading ? (
+                <div className="flex items-center justify-center h-36 text-sm text-muted-foreground">Loading…</div>
+              ) : uniqueMessages.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-36 gap-2 text-muted-foreground">
+                  <MessageSquare className="w-7 h-7 opacity-25" />
+                  <p className="text-xs">No messages yet</p>
+                </div>
+              ) : (
+                <div className="divide-y divide-border">
+                  {uniqueMessages.map((msg, i) => {
+                    const initials = (msg.caller_id ?? "?").replace(/\D/g, "").slice(-4, -2) || "?";
+                    const avatarColors = ["bg-violet-500", "bg-blue-500", "bg-emerald-500", "bg-rose-500"];
+                    return (
+                      <div key={msg.id} className="grid grid-cols-[1fr_auto_auto] items-center px-5 py-3 hover:bg-black/[0.02] transition-colors gap-4">
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className={cn("w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-white text-[10px] font-bold", avatarColors[i % avatarColors.length])}>
+                            {initials}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs font-semibold truncate">{msg.text ?? "Auto-reply sent"}</p>
+                            <p className="text-[10px] text-muted-foreground truncate">{formatPhone(msg.caller_id)}</p>
                           </div>
                         </div>
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">{profile?.full_name ? profile.full_name.split(" ")[0] + " " + (profile.full_name.split(" ")[1]?.[0] ?? "") + "." : "—"}</span>
+                        <span className="text-xs text-muted-foreground whitespace-nowrap">{timeAgo(msg.created_at)}</span>
                       </div>
-                    ))}
-                  </div>
-                )}
-              </motion.div>
-
-              {/* Quick Actions */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.45, duration: 0.4 }}
-                className="glass-strong rounded-2xl border border-border p-5 shadow-sm"
-              >
-                <h2 className="font-display text-sm font-bold mb-3">Quick Actions</h2>
-                <div className="space-y-2">
-                  {[
-                    { label: "View Database", icon: Database, color: "text-indigo-500", bg: "bg-indigo-500/10", href: "/database" },
-                    { label: "Control Center", icon: LayoutList, color: "text-amber-500", bg: "bg-amber-500/10", href: "/control-center" },
-                    { label: "Billing & Plan", icon: Layers, color: "text-purple-500", bg: "bg-purple-500/10", href: "/payment" },
-                  ].map(({ label, icon: Icon, color, bg, href }) => (
-                    <button
-                      key={href}
-                      onClick={() => go(href)}
-                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-primary/5 transition-colors group text-left"
-                    >
-                      <div className={cn("w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0", bg)}>
-                        <Icon className={cn("w-4 h-4", color)} />
-                      </div>
-                      <span className="text-sm font-medium flex-1">{label}</span>
-                      <ChevronRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-60 transition-opacity" />
-                    </button>
-                  ))}
+                    );
+                  })}
                 </div>
-              </motion.div>
-            </div>
+              )}
+            </motion.div>
           </div>
+
+          {/* ── QUICK ACTIONS (horizontal) ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45, duration: 0.4 }}
+          >
+            <h2 className="font-display text-sm font-bold mb-3">Quick Actions</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {[
+                { label: "View Database", desc: "Browse all captured contacts and leads", icon: Database, color: "text-indigo-500", bg: "bg-indigo-500/10", href: "/database" },
+                { label: "Control Center", desc: "Configure auto-reply messages and rules", icon: LayoutList, color: "text-amber-500", bg: "bg-amber-500/10", href: "/control-center" },
+                { label: "Billing & Plan", desc: "Manage your subscription and billing", icon: Layers, color: "text-purple-500", bg: "bg-purple-500/10", href: "/payment" },
+              ].map(({ label, desc, icon: Icon, color, bg, href }) => (
+                <button
+                  key={href}
+                  onClick={() => go(href)}
+                  className="glass-strong flex items-center gap-4 px-5 py-4 rounded-2xl border border-border hover:border-foreground/15 transition-all shadow-sm text-left group"
+                >
+                  <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0", bg)}>
+                    <Icon className={cn("w-5 h-5", color)} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold">{label}</p>
+                    <p className="text-xs text-muted-foreground truncate">{desc}</p>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+
         </main>
       </div>
     </div>
