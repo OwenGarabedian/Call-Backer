@@ -15,6 +15,8 @@ import DatabaseScreen from "./pages/Database";
 import TextProfile from "./pages/TextProfile";
 import Settings from "./pages/Settings";
 import ProfileSettings from "./pages/ProfileSettings";
+import AutomationConfig from "./pages/AutomationConfig";
+import BusinessKnowledge from "./pages/BusinessKnowledge";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +38,8 @@ const App = () => (
           <Route path="/text-profile" element={<TextProfile />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/profileSettings" element={<ProfileSettings />} />
+          <Route path="/automationConfig" element={<AutomationConfig />} />
+          <Route path="/businessKnowledge" element={<BusinessKnowledge />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

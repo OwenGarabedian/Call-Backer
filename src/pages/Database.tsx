@@ -324,6 +324,7 @@ export default function DatabaseScreen() {
           <div className="flex items-center gap-2">
             <button className="w-9 h-9 rounded-xl border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors relative">
               <Bell className="w-4 h-4" />
+              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-red-500" />
             </button>
             <button
               onClick={() => navigate("/")}

@@ -169,6 +169,13 @@ export default function Settings() {
           <div className="flex items-center gap-2">
             <button className="w-9 h-9 rounded-xl border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors relative">
               <Bell className="w-4 h-4" />
+              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-red-500" />
+            </button>
+            <button
+              onClick={() => navigate("/")}
+              className="h-9 px-4 rounded-xl border border-border text-xs font-semibold text-muted-foreground hover:text-foreground hover:border-foreground/20 transition-all"
+            >
+              Back to site
             </button>
           </div>
         </header>
@@ -315,7 +322,7 @@ export default function Settings() {
                 </button>
 
                 <button
-                  onClick={() => go("/control-center")}
+                  onClick={() => go("/automationConfig")}
                   className="w-full p-5 flex items-center justify-between hover:bg-white/[0.03] transition-colors group text-left"
                 >
                   <div className="flex items-center gap-4">

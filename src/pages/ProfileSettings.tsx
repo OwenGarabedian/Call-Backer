@@ -201,7 +201,7 @@ export default function ProfileSettings() {
              <button
                 onClick={handleSave}
                 disabled={saving || loading}
-                className="h-10 px-5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold flex items-center gap-2 transition-all disabled:opacity-50 shadow-sm"
+                className="h-10 px-5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold flex items-center gap-2 transition-all disabled:opacity-50 shadow-sm"
               >
                 {saving ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
