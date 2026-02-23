@@ -182,7 +182,7 @@ export const Pricing = () => {
           <span className="text-neutral-400 font-serif italic">Serious ROI.</span>
         </h1>
         <p className="text-xl text-neutral-500 max-w-2xl mx-auto">
-          Secure the launch rate today. Lock in your price for life.
+          Secure the launch rate today. Lock in your price.
         </p>
       </div>
 
