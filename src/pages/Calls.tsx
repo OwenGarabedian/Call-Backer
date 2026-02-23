@@ -238,7 +238,7 @@ export default function Calls() {
                 <LayoutList className="w-6 h-6 text-indigo-500" />
               </div>
               <div>
-                <div className="text-[10px] font-bold text-muted-foreground tracking-wider mb-0.5">TOTAL LOGS</div>
+                <div className="text-[10px] font-bold text-muted-foreground tracking-wider mb-0.5">TOTAL CALLS</div>
                 <div className="text-3xl font-black font-display text-foreground leading-none">{totalCalls}</div>
               </div>
             </motion.div>
@@ -253,7 +253,7 @@ export default function Calls() {
                 <PhoneMissed className="w-6 h-6 text-red-500" />
               </div>
               <div>
-                <div className="text-[10px] font-bold text-muted-foreground tracking-wider mb-0.5">Missed Calls</div>
+                <div className="text-[10px] font-bold text-muted-foreground tracking-wider mb-0.5">MISSED CALLS</div>
                 <div className="text-3xl font-black font-display text-foreground leading-none">{textedCount}</div>
               </div>
             </motion.div>
@@ -274,7 +274,7 @@ export default function Calls() {
               <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Caller</span>
               <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Action</span>
               <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Status</span>
-              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider text-right">Time</span>
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider text-right pr-5">Time</span>
             </div>
 
             {loading ? (
@@ -299,8 +299,8 @@ export default function Calls() {
                       
                       {/* Caller Info */}
                       <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0">
-                          <Phone className="w-4 h-4 text-foreground/70" />
+                        <div className="w-9 h-9 rounded-xl bg-purple-500/10 hover:bg-indigo-500/20 transition-colors flex items-center justify-center flex-shrink-0 cursor-pointer shadow-sm">
+                          <Phone className="w-4 h-4 text-indigo-600" />
                         </div>
                         <div className="min-w-0">
                           <p className="text-sm font-semibold text-foreground truncate">{displayName}</p>
