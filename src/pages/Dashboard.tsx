@@ -34,17 +34,18 @@ interface Profile {
 
 interface CallLog {
   id: string;
-  caller_number?: string;
-  created_at?: string;
-  status?: string;
+  phone_number_calling?: string;
+  time?: string;
+  action?: string;
+  success?: boolean;
 }
 
 interface Message {
   id: string;
   status?: string;
   created_at?: string;
-  to_number?: string;
-  body?: string;
+  caller_id?: string;
+  text?: string;
 }
 
 /* ─── Sidebar nav items ─────────────────────────────── */
@@ -122,11 +123,21 @@ export default function Dashboard() {
     if (data) setProfile(data);
   }
   async function fetchCalls() {
-    const { data } = await supabase.from("call_log").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(20);
+    const { data } = await supabase
+      .from("call_log")
+      .select("*")
+      .eq("user_id", userId)
+      .order("time", { ascending: false })
+      .limit(20);
     if (data) setCalls(data);
   }
   async function fetchMessages() {
-    const { data } = await supabase.from("messages").select("*").eq("user_id", userId).order("created_at", { ascending: false }).limit(20);
+    const { data } = await supabase
+      .from("messages")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(20);
     if (data) setMessages(data);
   }
 
@@ -228,7 +239,7 @@ export default function Dashboard() {
         <header className="flex items-center justify-between px-6 py-4 border-b border-border glass-strong flex-shrink-0">
           <div>
             <h1 className="font-display text-xl font-bold">
-              {loading ? "Dashboard" : `Good afternoon, ${profile?.full_name?.split(" ")[0] ?? "there"} 👋`}
+              {loading ? "Dashboard" : `Welcome, ${profile?.full_name ?? "there"}`}
             </h1>
             <p className="text-xs text-muted-foreground mt-0.5">
               {profile?.business_name ?? "Here's what's happening with your calls today."}
@@ -322,13 +333,13 @@ export default function Dashboard() {
                         <PhoneMissed className="w-4 h-4 text-red-500" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold">{formatPhone(call.caller_number)}</p>
+                        <p className="text-sm font-semibold">{formatPhone(call.phone_number_calling)}</p>
                         <p className="text-xs text-muted-foreground">
-                          {call.status ?? "missed"}
+                          {call.action ?? "missed"}
                         </p>
                       </div>
                       <div className="flex items-center gap-3 flex-shrink-0">
-                        <span className="text-xs text-muted-foreground">{timeAgo(call.created_at)}</span>
+                        <span className="text-xs text-muted-foreground">{timeAgo(call.time)}</span>
                         <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 font-medium">
                           Missed
                         </span>
@@ -376,8 +387,8 @@ export default function Dashboard() {
                           <MessageSquare className="w-3.5 h-3.5 text-green-500" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-semibold">{formatPhone(msg.to_number)}</p>
-                          <p className="text-xs text-muted-foreground truncate">{msg.body ?? "Auto-reply sent"}</p>
+                          <p className="text-xs font-semibold">{formatPhone(msg.caller_id)}</p>
+                          <p className="text-xs text-muted-foreground truncate">{msg.text ?? "Auto-reply sent"}</p>
                           <div className="flex items-center gap-1.5 mt-1">
                             <span className={cn(
                               "inline-block w-1.5 h-1.5 rounded-full",
