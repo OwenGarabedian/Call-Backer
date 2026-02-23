@@ -493,7 +493,7 @@ export default function DatabaseScreen() {
                                         </span>
                                     ) : (
                                         <span className="flex items-center gap-1.5 text-blue-600 dark:text-blue-500 text-[10px] font-bold tracking-widest uppercase">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" /> LEAD
+                                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" /> ACTIVE LEAD
                                         </span>
                                     )}
                                 </div>
