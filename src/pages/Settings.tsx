@@ -103,10 +103,8 @@ export default function Settings() {
   };
 
   const handleLogout = async () => {
-    if (window.confirm("Are you sure you want to sign out?")) {
-      await supabase.auth.signOut();
-      navigate("/");
-    }
+    await supabase.auth.signOut();
+    navigate("/");
   };
 
   const go = (path: string) => navigate(path, { state: { id: userId } });

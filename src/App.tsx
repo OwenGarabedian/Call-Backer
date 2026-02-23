@@ -14,6 +14,7 @@ import Messages from "./pages/Messages";
 import DatabaseScreen from "./pages/Database";
 import TextProfile from "./pages/TextProfile";
 import Settings from "./pages/Settings";
+import ProfileSettings from "./pages/ProfileSettings";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/database" element={<DatabaseScreen />} />
           <Route path="/text-profile" element={<TextProfile />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/profileSettings" element={<ProfileSettings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
