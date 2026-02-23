@@ -272,7 +272,7 @@ const DesktopHero = () => {
         </div>
 
         {/* Final CTA Reveal */}
-        <motion.div style={{ opacity: finalOpacity, scale: finalScale, y: finalY }} className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none p-6">
+        <motion.div style={{ opacity: finalOpacity, scale: finalScale, y: finalY }} className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none p-6 pt-20 pb-36">
             <div className="text-center max-w-2xl px-6 relative pointer-events-auto">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-gradient-to-tr from-purple-100/50 to-blue-100/50 blur-[60px] rounded-full z-[-1] pointer-events-none" />
                 <h2 className="text-fluid-h2 font-semibold text-[#111] tracking-tight leading-[1.1] mb-8">
@@ -293,7 +293,7 @@ const DesktopHero = () => {
         </motion.div>
 
         {/* Marquee */}
-        <motion.div style={{ opacity: socialOpacity, y: socialY }} className="absolute bottom-24 inset-x-0 z-50 pointer-events-none px-6">
+        <motion.div style={{ opacity: socialOpacity, y: socialY }} className="absolute bottom-24 inset-x-0 z-30 pointer-events-none px-6">
              <HeroMarquee />
         </motion.div>
       </div>
