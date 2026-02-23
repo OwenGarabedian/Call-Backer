@@ -46,6 +46,7 @@ interface Message {
   created_at?: string;
   caller_id?: string;
   text?: string;
+  direction?: string;
 }
 
 /* ─── Sidebar nav items ─────────────────────────────── */
@@ -109,19 +110,84 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [calls, setCalls] = useState<CallLog[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
+  
+  // Updated Stats State
+  const [stats, setStats] = useState({
+    totalCalls: 0,
+    totalMessages: 0,
+    totalCustomers: 0,
+    engagedPercent: 0,
+  });
 
   useEffect(() => {
     if (!userId) return;
     (async () => {
-      await Promise.all([fetchProfile(), fetchCalls(), fetchMessages()]);
+      await Promise.all([fetchProfile(), fetchCalls(), fetchMessages(), fetchStats()]);
       setLoading(false);
     })();
   }, [userId]);
+
+  async function fetchStats() {
+    // Fetch relevant data simultaneously just like the app
+    const [profilesRes, logsRes, messagesRes] = await Promise.all([
+      supabase.from("text_profiles").select("caller_id").eq("user_id", userId),
+      supabase.from("call_log").select("phone_number_calling, action").eq("user_id", userId),
+      supabase.from("messages").select("caller_id, direction").eq("user_id", userId),
+    ]);
+
+    const fetchedProfiles = profilesRes.data || [];
+    const logs = logsRes.data || [];
+    const fetchedMsgs = messagesRes.data || [];
+
+    // Normalizer to ensure matching phone number formats
+    const normalizePhone = (phone?: string | null) => {
+      if (!phone) return null;
+      const digitsOnly = phone.replace(/\D/g, "");
+      return digitsOnly.length >= 10 ? digitsOnly.slice(-10) : digitsOnly;
+    };
+
+    // Calculate Unique Customers
+    const uniqueContactsMap = new Map<string, boolean>();
+
+    fetchedProfiles.forEach((p) => {
+      const normPhone = normalizePhone(p.caller_id);
+      if (normPhone) uniqueContactsMap.set(normPhone, true);
+    });
+
+    logs.forEach((log) => {
+      const normPhone = normalizePhone(log.phone_number_calling);
+      if (normPhone) uniqueContactsMap.set(normPhone, true);
+    });
+
+    const totalCustomers = uniqueContactsMap.size;
+
+    // Calculate Engaged/Replied Percent based on inbound messages
+    const inboundMessages = fetchedMsgs.filter(
+      (m) => m.direction && m.direction.includes("inbound")
+    );
+    
+    const engagedCallers = new Set(
+      inboundMessages.map((m) => normalizePhone(m.caller_id)).filter(Boolean)
+    );
+
+    const engagedPercent =
+      totalCustomers > 0
+        ? Math.round((engagedCallers.size / totalCustomers) * 100)
+        : 0;
+
+    setStats({
+      totalCalls: logs.length,
+      totalMessages: fetchedMsgs.length,
+      totalCustomers: totalCustomers,
+      engagedPercent: engagedPercent,
+    });
+  }
 
   async function fetchProfile() {
     const { data } = await supabase.from("profiles").select("*").eq("id", userId).single();
     if (data) setProfile(data);
   }
+  
   async function fetchCalls() {
     const { data } = await supabase
       .from("call_log")
@@ -131,6 +197,7 @@ export default function Dashboard() {
       .limit(20);
     if (data) setCalls(data);
   }
+  
   async function fetchMessages() {
     const { data } = await supabase
       .from("messages")
@@ -143,13 +210,10 @@ export default function Dashboard() {
 
   const go = (path: string) => navigate(path, { state: { id: userId } });
 
-  const repliedCount = messages.filter((m) => m.status === "sent" || m.status === "delivered").length;
-  const replyRate = messages.length > 0 ? Math.round((repliedCount / messages.length) * 100) : 0;
-
   const statCards = [
     {
       title: "Missed Calls",
-      value: loading ? "—" : calls.length,
+      value: loading ? "—" : stats.totalCalls,
       sub: "Total captured",
       icon: PhoneMissed,
       color: "#ef4444",
@@ -158,7 +222,7 @@ export default function Dashboard() {
     },
     {
       title: "Messages Sent",
-      value: loading ? "—" : messages.length,
+      value: loading ? "—" : stats.totalMessages, 
       sub: "Auto-reply total",
       icon: MessageSquare,
       color: "#22c55e",
@@ -167,8 +231,8 @@ export default function Dashboard() {
     },
     {
       title: "Reply Rate",
-      value: loading ? "—" : `${replyRate}%`,
-      sub: "Delivered / total",
+      value: loading ? "—" : `${stats.engagedPercent}%`, 
+      sub: "Engaged leads",
       icon: TrendingUp,
       color: "#6366f1",
       bg: "rgba(99,102,241,0.08)",
@@ -176,8 +240,8 @@ export default function Dashboard() {
     },
     {
       title: "Leads Captured",
-      value: loading ? "—" : calls.length,
-      sub: "Potential clients",
+      value: loading ? "—" : stats.totalCustomers, 
+      sub: "Unique potential clients",
       icon: Zap,
       color: "#f59e0b",
       bg: "rgba(245,158,11,0.08)",

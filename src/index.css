@@ -4,10 +4,10 @@
 
 @layer base {
   :root {
-    /* Light Mode - Lavender/Mauve Theme */
-    --background: 270 12% 70%;
-    --background-secondary: 270 18% 78%;
-    --background-tertiary: 220 12% 87%;
+    /* Light Mode - Soft near-white lavender (matches auth pages) */
+    --background: 252 100% 99%;
+    --background-secondary: 262 52% 95%;
+    --background-tertiary: 255 30% 97%;
     --foreground: 0 0% 10%;
 
     --card: 0 0% 100%;
@@ -150,9 +150,9 @@
 
   .bg-gradient-main {
     background: linear-gradient(
-      180deg,
-      hsl(var(--background)) 0%,
-      hsl(var(--background-secondary)) 100%
+      135deg,
+      #f8f7ff 0%,
+      #ede9f9 100%
     );
   }
 
