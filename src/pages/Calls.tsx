@@ -203,14 +203,22 @@ export default function Calls() {
         {/* Top bar */}
         <header className="flex items-center justify-between px-6 py-4 border-b border-border glass-strong flex-shrink-0">
           <div>
-            <h1 className="font-display text-xl font-bold">Caller Logs</h1>
-            <p className="text-xs text-muted-foreground mt-0.5">History of all inbound recorded calls.</p>
+            <h1 className="font-display text-xl font-bold">
+              {loading ? "Dashboard" : `Welcome, ${profile?.full_name ?? "there"}`}
+            </h1>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {profile?.business_name ?? "Here's what's happening with your calls today."}
+            </p>
           </div>
-          <div className="flex items-center gap-3">
-            <button className="w-9 h-9 flex items-center justify-center rounded-full bg-secondary/80 text-foreground hover:bg-secondary transition-colors">
+          <div className="flex items-center gap-2">
+            <button className="w-9 h-9 rounded-xl border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-colors relative">
               <Bell className="w-4 h-4" />
+              <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-red-500" />
             </button>
-            <button onClick={() => navigate("/")} className="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold rounded-full shadow-md transition-all">
+            <button
+              onClick={() => navigate("/")}
+              className="h-9 px-4 rounded-xl border border-border text-xs font-semibold text-muted-foreground hover:text-foreground hover:border-foreground/20 transition-all"
+            >
               Back to site
             </button>
           </div>
@@ -245,7 +253,7 @@ export default function Calls() {
                 <PhoneMissed className="w-6 h-6 text-red-500" />
               </div>
               <div>
-                <div className="text-[10px] font-bold text-muted-foreground tracking-wider mb-0.5">ACTIONS TAKEN</div>
+                <div className="text-[10px] font-bold text-muted-foreground tracking-wider mb-0.5">Missed Calls</div>
                 <div className="text-3xl font-black font-display text-foreground leading-none">{textedCount}</div>
               </div>
             </motion.div>
@@ -304,8 +312,8 @@ export default function Calls() {
 
                       {/* Action */}
                       <div className="flex items-center">
-                        <span className="inline-block px-2.5 py-1 bg-secondary text-secondary-foreground text-[11px] font-semibold uppercase tracking-wider rounded-lg">
-                          {item.action || "UNKNOWN"}
+                        <span className={cn("inline-flex px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider", (item.action || "Unknown").toLowerCase() === "unknown" ? "bg-red-500/10 text-red-600" : (item.action || "").toLowerCase() === "answered" ? "bg-green-500/10 text-green-600" : "bg-blue-500/10 text-blue-600")}>
+                          {item.action || "Unknown"}
                         </span>
                       </div>
 
