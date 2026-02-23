@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Phone, ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
+import { Phone, ArrowRight, ArrowLeft, Eye, EyeOff, Loader2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
@@ -99,13 +99,22 @@ export default function SignUp() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-main flex items-center justify-center px-4 py-20">
+    <div className="min-h-screen flex items-center justify-center px-4 py-20" style={{ background: "linear-gradient(135deg, #f8f7ff 0%, #ede9f9 100%)" }}>
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
         className="w-full max-w-md"
       >
+        {/* Back button */}
+        <Link
+          to="/"
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mb-4 group"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+          Back to home
+        </Link>
+
         {/* Card */}
         <div className="glass-strong rounded-3xl p-8 shadow-xl">
           {/* Logo */}
