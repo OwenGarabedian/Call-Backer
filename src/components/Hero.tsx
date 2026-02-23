@@ -293,7 +293,7 @@ const DesktopHero = () => {
         </motion.div>
 
         {/* Marquee */}
-        <motion.div style={{ opacity: socialOpacity, y: socialY }} className="absolute bottom-24 inset-x-0 z-30 pointer-events-none px-6">
+        <motion.div style={{ opacity: socialOpacity, y: socialY }} className="absolute bottom-16 inset-x-0 z-30 pointer-events-none px-6">
              <HeroMarquee />
         </motion.div>
       </div>
