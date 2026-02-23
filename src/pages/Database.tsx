@@ -16,7 +16,6 @@ import {
   Search,
   MapPin,
   Calendar,
-  Sparkles,
   Zap,
   Filter
 } from "lucide-react";
@@ -64,14 +63,14 @@ function formatPhone(num?: string | null) {
 
 function normalizePhone(phone: string | null) {
   if (!phone) return null;
-  const digitsOnly = phone.replace(/\D/g, "");
+  const digitsOnly = String(phone).replace(/\D/g, "");
   return digitsOnly.length >= 10 ? digitsOnly.slice(-10) : digitsOnly;
 }
 
 export default function DatabaseScreen() {
   const location = useLocation();
   const navigate = useNavigate();
-  const userId = (location.state as { id?: string })?.id;
+  const routeUserId = (location.state as { id?: string })?.id;
 
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -85,27 +84,25 @@ export default function DatabaseScreen() {
     appointments: 0,
   });
 
-  // Filters
+  // Filters - FIXED: Now strictly uses All, Leads, or Booked
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterType, setFilterType] = useState<"all" | "active" | "appointments">("all");
+  const [filterType, setFilterType] = useState<"all" | "leads" | "booked">("all");
 
-  const go = (path: string) => navigate(path, { state: { id: userId } });
+  const go = (path: string) => navigate(path, { state: { id: routeUserId } });
 
-  const fetchData = useCallback(async () => {
-    if (!userId) return;
-
+  const fetchData = useCallback(async (currentUserId: string) => {
     try {
       const { data: profileData } = await supabase
         .from("profiles")
         .select("*")
-        .eq("id", userId)
+        .eq("id", currentUserId)
         .single();
       if (profileData) setProfile(profileData);
 
       const [profilesRes, logsRes, messagesRes] = await Promise.all([
-        supabase.from("text_profiles").select("*").eq("user_id", userId),
-        supabase.from("call_log").select("phone_number_calling, success, time, action").eq("user_id", userId),
-        supabase.from("messages").select("caller_id, direction").eq("user_id", userId),
+        supabase.from("text_profiles").select("*").eq("user_id", currentUserId),
+        supabase.from("call_log").select("phone_number_calling, success, time, action").eq("user_id", currentUserId),
+        supabase.from("messages").select("caller_id, direction").eq("user_id", currentUserId),
       ]);
 
       const fetchedProfiles = profilesRes.data || [];
@@ -127,7 +124,7 @@ export default function DatabaseScreen() {
               appointment: existing.appointment || p.appointment,
               location: existing.location || p.location,
               updated_at:
-                new Date(p.updated_at) > new Date(existing.updated_at)
+                new Date(p.updated_at || 0) > new Date(existing.updated_at || 0)
                   ? p.updated_at
                   : existing.updated_at,
             });
@@ -141,8 +138,8 @@ export default function DatabaseScreen() {
         const normPhone = normalizePhone(log.phone_number_calling);
         if (normPhone && !uniqueContactsMap.has(normPhone)) {
           uniqueContactsMap.set(normPhone, {
-            id: log.phone_number_calling || normPhone,
-            caller_id: log.phone_number_calling || normPhone,
+            id: String(log.phone_number_calling || normPhone),
+            caller_id: String(log.phone_number_calling || normPhone),
             name: null,
             need: null,
             location: null,
@@ -154,12 +151,15 @@ export default function DatabaseScreen() {
 
       const totalCustomers = uniqueContactsMap.size;
       const totalCalls = logs.length;
-      const missedCalls = logs.filter(
-        (log) => log.action === "texted" || log.action === "Texted" || log.action === "sent"
-      ).length;
+      
+      const missedCalls = logs.filter((log) => {
+          const actionStr = String(log.action || "").toLowerCase();
+          return actionStr === "texted" || actionStr === "sent";
+      }).length;
+      
       const missedPercent = totalCalls > 0 ? Math.round((missedCalls / totalCalls) * 100) : 0;
 
-      const inboundMessages = messages.filter((m) => m.direction && m.direction.includes("inbound"));
+      const inboundMessages = messages.filter((m) => String(m.direction || "").toLowerCase().includes("inbound"));
       
       const engagedCallers = new Set(
         inboundMessages.map((m) => normalizePhone(m.caller_id)).filter(Boolean)
@@ -172,11 +172,12 @@ export default function DatabaseScreen() {
           ...p,
           isActiveLead: engagedCallers.has(normalizePhone(p.caller_id)),
         }))
-        .sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime());
+        .sort((a, b) => new Date(b.updated_at || 0).getTime() - new Date(a.updated_at || 0).getTime());
 
-      const appointmentsCount = unifiedProfiles.filter(
-        (p) => p.appointment && p.appointment.trim() !== "" && p.appointment.toLowerCase() !== "null"
-      ).length;
+      const appointmentsCount = unifiedProfiles.filter((p) => {
+          const apptStr = String(p.appointment || "");
+          return apptStr.trim() !== "" && apptStr.toLowerCase() !== "null";
+      }).length;
 
       setStats({
         totalCustomers,
@@ -190,41 +191,71 @@ export default function DatabaseScreen() {
     } finally {
       setLoading(false);
     }
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
-    fetchData();
+    let isMounted = true;
+    let crmSubscription: any = null;
 
-    if (!userId) return;
-    const crmSubscription = supabase
-      .channel(`crm-${userId}`) 
-      .on("postgres_changes", { event: "*", schema: "public", table: "text_profiles", filter: `user_id=eq.${userId}` }, () => fetchData())
-      .on("postgres_changes", { event: "*", schema: "public", table: "call_log", filter: `user_id=eq.${userId}` }, () => fetchData())
-      .on("postgres_changes", { event: "*", schema: "public", table: "messages", filter: `user_id=eq.${userId}` }, () => fetchData())
-      .subscribe();
+    const initDataAndRealtime = async () => {
+      let currentUserId = routeUserId;
+      if (!currentUserId) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+            currentUserId = user.id;
+        } else {
+            if (isMounted) setLoading(false);
+            return; 
+        }
+      }
+
+      if (!isMounted) return;
+      
+      await fetchData(currentUserId);
+
+      crmSubscription = supabase
+        .channel(`crm-${currentUserId}`) 
+        .on("postgres_changes", { event: "*", schema: "public", table: "text_profiles", filter: `user_id=eq.${currentUserId}` }, () => fetchData(currentUserId!))
+        .on("postgres_changes", { event: "*", schema: "public", table: "call_log", filter: `user_id=eq.${currentUserId}` }, () => fetchData(currentUserId!))
+        .on("postgres_changes", { event: "*", schema: "public", table: "messages", filter: `user_id=eq.${currentUserId}` }, () => fetchData(currentUserId!))
+        .subscribe();
+    };
+
+    initDataAndRealtime();
 
     return () => {
-      supabase.removeChannel(crmSubscription);
+      isMounted = false;
+      if (crmSubscription) supabase.removeChannel(crmSubscription);
     };
-  }, [userId, fetchData]);
+  }, [routeUserId, fetchData]);
 
   // Derived filtered data
   const filteredProfiles = profiles.filter((p) => {
-    // 1. Text Search
     const q = searchQuery.toLowerCase();
-    const phoneMatch = p.caller_id && p.caller_id.includes(q);
-    const nameMatch = p.name && p.name.toLowerCase().includes(q);
-    const needMatch = p.need && p.need.toLowerCase().includes(q);
-    const matchesSearch = phoneMatch || nameMatch || needMatch;
+    const safePhone = p.caller_id ? String(p.caller_id).toLowerCase() : "";
+    const safeName = p.name ? String(p.name).toLowerCase() : "";
+    const safeNeed = p.need ? String(p.need).toLowerCase() : "";
+    
+    const matchesSearch = !q || safePhone.includes(q) || safeName.includes(q) || safeNeed.includes(q);
 
     if (!matchesSearch) return false;
 
-    // 2. Tab Filter
-    if (filterType === "active") return p.isActiveLead;
-    if (filterType === "appointments") {
-       return p.appointment && p.appointment.trim() !== "" && p.appointment.toLowerCase() !== "null";
+    const appointmentStr = p.appointment ? String(p.appointment) : "";
+    const hasValidAppointment = appointmentStr.trim() !== "" && appointmentStr.toLowerCase() !== "null";
+
+    // FIXED: Corrected tab filtering logic
+    if (filterType === "leads") {
+      // "Leads" are anyone who DOES NOT have an appointment booked yet
+      return !hasValidAppointment; 
     }
-    return true; // "all"
+    
+    if (filterType === "booked") {
+      // "Booked" are only those with an appointment
+       return hasValidAppointment;
+    }
+    
+    // "All" returns everyone
+    return true; 
   });
 
   return (
@@ -323,7 +354,7 @@ export default function DatabaseScreen() {
                   </div>
                   <div className="glass-strong border border-border px-4 py-2 rounded-full flex items-center gap-2 shadow-sm">
                       <Calendar className="w-4 h-4 text-amber-500" />
-                      <span className="text-xs font-semibold text-muted-foreground">Appointments:</span>
+                      <span className="text-xs font-semibold text-muted-foreground">Appointments Booked:</span>
                       <span className="text-sm font-bold text-foreground">{stats.appointments}</span>
                   </div>
               </div>
@@ -348,6 +379,8 @@ export default function DatabaseScreen() {
                           className="w-full bg-background/50 border border-border text-sm rounded-xl pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm md:hidden"
                       />
                   </div>
+                  
+                  {/* FIXED: Tab Buttons */}
                   <div className="flex items-center bg-background/50 border border-border rounded-xl p-1 shadow-sm w-full sm:w-auto">
                       <button 
                           onClick={() => setFilterType("all")}
@@ -356,14 +389,14 @@ export default function DatabaseScreen() {
                           All
                       </button>
                       <button 
-                          onClick={() => setFilterType("active")}
-                          className={cn("px-4 py-1.5 text-xs font-semibold rounded-lg transition-all flex-1 sm:flex-none text-center", filterType === "active" ? "bg-foreground text-background shadow-md" : "text-muted-foreground hover:text-foreground")}
+                          onClick={() => setFilterType("leads")}
+                          className={cn("px-4 py-1.5 text-xs font-semibold rounded-lg transition-all flex-1 sm:flex-none text-center", filterType === "leads" ? "bg-foreground text-background shadow-md" : "text-muted-foreground hover:text-foreground")}
                       >
                           Leads
                       </button>
                       <button 
-                          onClick={() => setFilterType("appointments")}
-                          className={cn("px-4 py-1.5 text-xs font-semibold rounded-lg transition-all flex-1 sm:flex-none text-center", filterType === "appointments" ? "bg-foreground text-background shadow-md" : "text-muted-foreground hover:text-foreground")}
+                          onClick={() => setFilterType("booked")}
+                          className={cn("px-4 py-1.5 text-xs font-semibold rounded-lg transition-all flex-1 sm:flex-none text-center", filterType === "booked" ? "bg-foreground text-background shadow-md" : "text-muted-foreground hover:text-foreground")}
                       >
                           Booked
                       </button>
@@ -390,11 +423,13 @@ export default function DatabaseScreen() {
             >
                <AnimatePresence>
                  {filteredProfiles.map((p, idx) => {
-                    const hasName = p.name && p.name.trim() !== "" && p.name.toLowerCase() !== "null";
-                    const hasAppointment = p.appointment && p.appointment.trim() !== "" && p.appointment.toLowerCase() !== "null";
-                    const isLead = p.isActiveLead;
-                    const daysSinceUpdate = (new Date().getTime() - new Date(p.updated_at).getTime()) / (1000 * 3600 * 24);
-                    const isRecent = daysSinceUpdate <= 7;
+                    const safeNameStr = p.name ? String(p.name) : "";
+                    const hasName = safeNameStr.trim() !== "" && safeNameStr.toLowerCase() !== "null";
+                    
+                    const safeApptStr = p.appointment ? String(p.appointment) : "";
+                    const hasAppointment = safeApptStr.trim() !== "" && safeApptStr.toLowerCase() !== "null";
+                    
+                    const isEngaged = p.isActiveLead;
 
                     return (
                         <motion.div
@@ -404,23 +439,21 @@ export default function DatabaseScreen() {
                            exit={{ opacity: 0, scale: 0.95 }}
                            transition={{ duration: 0.3, delay: idx > 15 ? 0 : idx * 0.02 }}
                            key={p.id}
-                           onClick={() => navigate(`/text-profile?caller_id=${encodeURIComponent(p.caller_id)}`, { state: { id: userId } })}
+                           onClick={() => navigate(`/text-profile?caller_id=${encodeURIComponent(p.caller_id)}`, { state: { id: routeUserId } })}
                            className="group flex flex-col xl:flex-row xl:items-center justify-between py-4 sm:py-5 px-2 sm:px-6 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors cursor-pointer rounded-2xl sm:rounded-3xl"
                         >
                             {/* Left: Avatar & Text */}
                             <div className="flex items-center gap-4 sm:gap-5 min-w-0 mb-3 xl:mb-0 xl:w-1/3">
-                                {/* Avatar */}
                                 <div className={cn(
-                                    "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-display text-base sm:text-lg font-bold flex-shrink-0 transition-transform duration-300 group-hover:scale-105 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-500/20",
-                                    hasName ? "bg-indigo-50/50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400" : "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500"
+                                    "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-display text-base sm:text-lg font-bold flex-shrink-0 transition-transform duration-300 group-hover:scale-105",
+                                    hasName ? "bg-indigo-50/50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-500/20" : "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500"
                                 )}>
-                                    {hasName ? p.name!.charAt(0).toUpperCase() : "#"}
+                                    {hasName ? safeNameStr.charAt(0).toUpperCase() : "#"}
                                 </div>
 
-                                {/* Name & Phone */}
                                 <div className="min-w-0">
                                     <h3 className="font-display font-bold text-gray-900 dark:text-gray-100 text-base sm:text-lg truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                                        {hasName ? p.name : "Unknown Caller"}
+                                        {hasName ? safeNameStr : "Unknown Caller"}
                                     </h3>
                                     <p className="text-[13px] sm:text-[14px] text-gray-500 dark:text-gray-400 font-medium mt-0.5 tracking-wide">
                                         {formatPhone(p.caller_id)}
@@ -433,38 +466,34 @@ export default function DatabaseScreen() {
                                 {/* Need & Location */}
                                 <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6 min-w-0 flex-1">
                                     <div className="flex-1 min-w-0">
-                                        {p.need && p.need !== "null" && p.need.trim() !== "" ? (
-                                            <p className="text-[14px] sm:text-[15px] text-gray-800 dark:text-gray-200 truncate font-medium transition-colors">Needs {p.need}</p>
+                                        {p.need && String(p.need) !== "null" && String(p.need).trim() !== "" ? (
+                                            <p className="text-[14px] sm:text-[15px] text-gray-800 dark:text-gray-200 truncate font-medium transition-colors">Needs {String(p.need)}</p>
                                         ) : (
                                             <p className="text-[13px] sm:text-[14px] text-gray-400 dark:text-gray-500 italic">No notes</p>
                                         )}
                                     </div>
 
-                                    {p.location && p.location !== "null" && p.location.trim() !== "" && (
+                                    {p.location && String(p.location) !== "null" && String(p.location).trim() !== "" && (
                                         <div className="flex items-center gap-1.5 w-24 sm:w-32 flex-shrink-0">
                                             <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 group-hover:text-indigo-400 transition-colors" />
-                                            <span className="text-[11px] sm:text-[12px] font-bold text-gray-500 truncate uppercase">{p.location}</span>
+                                            <span className="text-[11px] sm:text-[12px] font-bold text-gray-500 truncate uppercase">{String(p.location)}</span>
                                         </div>
                                     )}
                                 </div>
 
-                                {/* Status Indicators */}
-                                <div className="flex items-center justify-end w-20 sm:w-24 flex-shrink-0">
+                                {/* FIXED Status Indicators */}
+                                <div className="flex items-center justify-end w-24 flex-shrink-0">
                                     {hasAppointment ? (
                                         <span className="flex items-center gap-1.5 text-amber-600 text-[10px] font-bold tracking-widest uppercase">
                                             <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.6)]" /> BOOKED
                                         </span>
-                                    ) : isLead ? (
+                                    ) : isEngaged ? (
                                         <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-500 text-[10px] font-bold tracking-widest uppercase">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" /> ACTIVE
-                                        </span>
-                                    ) : isRecent ? (
-                                        <span className="flex items-center gap-1.5 text-blue-600 dark:text-blue-500 text-[10px] font-bold tracking-widest uppercase">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" /> RECENT
+                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" /> ENGAGED
                                         </span>
                                     ) : (
-                                        <span className="flex items-center gap-1.5 text-gray-400 text-[10px] font-bold tracking-widest uppercase">
-                                            <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" /> STALE
+                                        <span className="flex items-center gap-1.5 text-blue-600 dark:text-blue-500 text-[10px] font-bold tracking-widest uppercase">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" /> LEAD
                                         </span>
                                     )}
                                 </div>
