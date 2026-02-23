@@ -454,11 +454,7 @@ export default function Dashboard() {
                           <p className="text-xs font-semibold">{formatPhone(msg.caller_id)}</p>
                           <p className="text-xs text-muted-foreground truncate">{msg.text ?? "Auto-reply sent"}</p>
                           <div className="flex items-center gap-1.5 mt-1">
-                            <span className={cn(
-                              "inline-block w-1.5 h-1.5 rounded-full",
-                              msg.status === "delivered" ? "bg-green-500" : msg.status === "sent" ? "bg-blue-500" : "bg-yellow-500"
-                            )} />
-                            <span className="text-[10px] text-muted-foreground capitalize">{msg.status ?? "pending"}</span>
+                            <span className="text-[10px] text-muted-foreground capitalize">{msg.status ?? "sent"}</span>
                             <span className="text-[10px] text-muted-foreground">· {timeAgo(msg.created_at)}</span>
                           </div>
                         </div>
