@@ -23,9 +23,10 @@ function useViewportScale(designWidth = 1440, min = 0.55, max = 1.0) {
 interface PhoneMockupProps {
   scrollUp?: MotionValue<number>;
   stopFloating?: boolean;
+  isScrolling?: boolean;
 }
 
-export const PhoneMockup = ({ scrollUp, stopFloating }: PhoneMockupProps) => {
+export const PhoneMockup = ({ scrollUp, stopFloating, isScrolling }: PhoneMockupProps) => {
   const [phase, setPhase] = useState<'incoming' | 'missed' | 'reply' | 'app'>('incoming');
   const phoneScale = useViewportScale(1440, 0.55, 1.0);
 
@@ -88,8 +89,8 @@ export const PhoneMockup = ({ scrollUp, stopFloating }: PhoneMockupProps) => {
                     `,
                 }} 
             />
-            {/* Subtle animated sheen to keep it "alive" without heavy cost */}
-            <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_40%,rgba(255,255,255,0.4)_50%,transparent_60%)] bg-[length:200%_200%] animate-shine opacity-30" />
+            {/* Subtle animated sheen — paused during scroll to free GPU */}
+            <div className={`absolute inset-0 bg-[linear-gradient(45deg,transparent_40%,rgba(255,255,255,0.4)_50%,transparent_60%)] bg-[length:200%_200%] animate-shine opacity-30 ${isScrolling ? "[animation-play-state:paused]" : ""}`} />
 
             <style>{`
                 @keyframes shine {

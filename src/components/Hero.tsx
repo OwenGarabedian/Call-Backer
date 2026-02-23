@@ -216,7 +216,7 @@ const DesktopHero = () => {
 
   return (
     <div ref={containerRef} className="hidden lg:block relative h-[450vh] bg-[#FAFAFA] font-sans selection:bg-[#1A1A1A] selection:text-white"> 
-      <div className="sticky top-0 h-screen overflow-hidden transform-gpu">
+      <div className="sticky top-0 h-screen overflow-hidden transform-gpu" style={{ contain: "strict" }}>
         {/* Backgrounds */}
         <div className="absolute inset-0 z-0 bg-[#FAFAFA]">
             <div className="absolute top-[-10%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-gradient-to-br from-[#E0CCF7] to-transparent opacity-40 blur-3xl transform-gpu pointer-events-none" />
@@ -255,8 +255,8 @@ const DesktopHero = () => {
 
         {/* 3D Phone */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 perspective-1000 pt-20">
-          <motion.div style={{ x: phoneX, rotateZ: phoneRotateZ, rotateY: phoneRotateY, scale: phoneScale, translateZ: 0 }} className="origin-center">
-               <PhoneMockup scrollUp={notificationY} stopFloating={isScrolling} />
+          <motion.div style={{ x: phoneX, rotateZ: phoneRotateZ, rotateY: phoneRotateY, scale: phoneScale, translateZ: 0, willChange: "transform" }} className="origin-center">
+               <PhoneMockup scrollUp={notificationY} stopFloating={isScrolling} isScrolling={isScrolling} />
            </motion.div>
         </div>
 

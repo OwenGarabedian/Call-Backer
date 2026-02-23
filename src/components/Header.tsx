@@ -35,7 +35,7 @@ export const Header = () => {
 
           {/* CTA */}
           <MagneticButton variant="primary" size="default">
-            Get Access
+            Log In / Sign Up
           </MagneticButton>
         </div>
       </div>
