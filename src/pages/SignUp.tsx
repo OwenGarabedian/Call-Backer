@@ -41,7 +41,7 @@ export default function SignUp() {
     e.preventDefault();
     setLoading(true);
 
-    // Check email format
+    // Check email
     if (!verifyEmail()) {
       alert("Invalid Email: Please enter a valid work email address.");
       setLoading(false);
@@ -50,7 +50,7 @@ export default function SignUp() {
 
     const cleanEmail = email.trim().toLowerCase();
 
-    // Check if email is already in use
+    // Check if email is in database already
     const exists = await checkIfEmailExists(cleanEmail);
     if (exists) {
       alert("Account Exists: This email is already registered. Please sign in instead.");
@@ -58,7 +58,7 @@ export default function SignUp() {
       return;
     }
 
-    // Check password strength
+    // Check password format
     const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])/;
     if (password.length < 8) {
       alert("Weak Password: Password must be at least 8 characters long.");
