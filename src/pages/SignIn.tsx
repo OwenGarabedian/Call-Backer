@@ -205,9 +205,6 @@ export default function SignIn() {
                 <label className="text-sm font-medium uppercase tracking-wider text-xs opacity-80" htmlFor="signin-password">
                   Password
                 </label>
-                <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-                  Forgot password?
-                </a>
               </div>
               <div className="relative">
                 <input
