@@ -177,7 +177,7 @@ export const Pricing = () => {
           <span className="text-xs font-semibold text-blue-600 uppercase tracking-wide">Limited Time Launch Pricing</span>
         </motion.div>
         
-        <h1 className="text-5xl md:text-7xl font-bold text-neutral-900 tracking-tight mb-6">
+        <h1 className="text-fluid-h1 font-bold text-neutral-900 tracking-tight mb-6">
           Simple pricing. <br />
           <span className="text-neutral-400 font-serif italic">Serious ROI.</span>
         </h1>

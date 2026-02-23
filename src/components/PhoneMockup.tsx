@@ -2,6 +2,24 @@ import { motion, MotionValue, AnimatePresence } from "framer-motion";
 import { Phone, PhoneOff, PhoneIncoming, ArrowLeft, Video, Phone as PhoneIcon, Plus, ArrowUp } from "lucide-react";
 import { useEffect, useState, useMemo } from "react";
 
+// Tracks viewport width for scaling
+function useViewportScale(designWidth = 1440, min = 0.55, max = 1.0) {
+  const [scale, setScale] = useState(() => {
+    if (typeof window === "undefined") return 1;
+    return Math.min(max, Math.max(min, window.innerWidth / designWidth));
+  });
+
+  useEffect(() => {
+    const update = () =>
+      setScale(Math.min(max, Math.max(min, window.innerWidth / designWidth)));
+    window.addEventListener("resize", update);
+    update();
+    return () => window.removeEventListener("resize", update);
+  }, [designWidth, min, max]);
+
+  return scale;
+}
+
 interface PhoneMockupProps {
   scrollUp?: MotionValue<number>;
   stopFloating?: boolean;
@@ -9,6 +27,7 @@ interface PhoneMockupProps {
 
 export const PhoneMockup = ({ scrollUp, stopFloating }: PhoneMockupProps) => {
   const [phase, setPhase] = useState<'incoming' | 'missed' | 'reply' | 'app'>('incoming');
+  const phoneScale = useViewportScale(1440, 0.55, 1.0);
 
   useEffect(() => {
     const timer1 = setTimeout(() => setPhase('missed'), 3500);
@@ -31,6 +50,7 @@ export const PhoneMockup = ({ scrollUp, stopFloating }: PhoneMockupProps) => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="relative perspective-1000"
+        style={{ scale: phoneScale, transformOrigin: "center center" }}
       >
         <motion.div
           animate={stopFloating ? { y: 0 } : { y: [0, -15, 0] }}

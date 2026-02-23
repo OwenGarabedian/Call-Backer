@@ -71,7 +71,7 @@ const MobileHero = () => {
           <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest font-mono">Automated Lead Capture</span>
         </div>
 
-        <h1 className="text-5xl sm:text-6xl font-medium leading-[1.05] tracking-tight mb-5 text-[#111]">
+        <h1 className="text-fluid-h1 font-medium tracking-tight mb-5 text-[#111]">
           Turn Missed Calls <br />
           <span className="italic font-serif text-gray-400">Into New Jobs.</span>
         </h1>
@@ -144,7 +144,7 @@ const MobileHero = () => {
       {/* Final CTA */}
       <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} className="text-center z-10 w-full mb-12 relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-gradient-to-tr from-purple-100/50 to-blue-100/50 blur-[60px] rounded-full z-[-1]" />
-          <h2 className="text-4xl font-semibold text-[#111] tracking-tight leading-[1.1] mb-6">
+          <h2 className="text-fluid-h2 font-semibold text-[#111] tracking-tight leading-[1.1] mb-6">
               Make your phone <br /><span className="italic font-serif text-gray-400">your best employee.</span>
           </h2>
           <div className="w-full max-w-xs mx-auto flex flex-col items-center gap-4">
@@ -181,7 +181,7 @@ const DesktopHero = () => {
   const phoneX = useTransform(scrollYProgress, [0.1, 0.5], ["20vw", "0vw"]); 
   const phoneRotateZ = useTransform(scrollYProgress, [0.1, 0.55], ["0deg", "-90deg"]);
   const phoneRotateY = useTransform(scrollYProgress, [0.1, 0.55], ["-15deg", "0deg"]);
-  const phoneScale = useTransform(scrollYProgress, [0.15, 0.55], [1, 5.5]); 
+  const phoneScale = useTransform(scrollYProgress, [0.15, 0.55], [1, 4.0]); 
   
   const [isScrolling, setIsScrolling] = useState(false);
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
@@ -237,7 +237,7 @@ const DesktopHero = () => {
                     <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>
                     <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest font-mono">Automated Lead Capture</span>
                 </div>
-                <h1 className="text-8xl font-medium leading-[0.95] tracking-tight mb-8 text-[#111]">
+                <h1 className="text-fluid-hero font-medium tracking-tight mb-8 text-[#111]">
                     Turn Missed Calls <br />
                     <span className="italic font-serif text-gray-400">Into New Jobs.</span>
                 </h1>
@@ -275,7 +275,7 @@ const DesktopHero = () => {
         <motion.div style={{ opacity: finalOpacity, scale: finalScale, y: finalY }} className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none p-6">
             <div className="text-center max-w-2xl px-6 relative pointer-events-auto">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-gradient-to-tr from-purple-100/50 to-blue-100/50 blur-[60px] rounded-full z-[-1] pointer-events-none" />
-                <h2 className="text-7xl font-semibold text-[#111] tracking-tight leading-[1.1] mb-8">
+                <h2 className="text-fluid-h2 font-semibold text-[#111] tracking-tight leading-[1.1] mb-8">
                     Make your phone <br /><span className="italic font-serif text-gray-400">your best employee.</span>
                 </h2>
                 <div className="flex flex-col items-center gap-6">
