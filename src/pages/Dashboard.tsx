@@ -87,6 +87,7 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [calls, setCalls] = useState<CallLog[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [callerNames, setCallerNames] = useState<Record<string, string>>({});
   
   // Updated Stats State
   const [stats, setStats] = useState({
@@ -107,7 +108,7 @@ export default function Dashboard() {
   async function fetchStats() {
     // Fetch relevant data simultaneously just like the app
     const [profilesRes, logsRes, messagesRes] = await Promise.all([
-      supabase.from("text_profiles").select("caller_id").eq("user_id", userId),
+      supabase.from("text_profiles").select("caller_id, name").eq("user_id", userId),
       supabase.from("call_log").select("phone_number_calling, action").eq("user_id", userId),
       supabase.from("messages").select("caller_id, direction").eq("user_id", userId),
     ]);
@@ -125,11 +126,16 @@ export default function Dashboard() {
 
     // Calculate Unique Customers
     const uniqueContactsMap = new Map<string, boolean>();
+    const namesMap: Record<string, string> = {};
 
     fetchedProfiles.forEach((p) => {
       const normPhone = normalizePhone(p.caller_id);
-      if (normPhone) uniqueContactsMap.set(normPhone, true);
+      if (normPhone) {
+        uniqueContactsMap.set(normPhone, true);
+        if (p.name) namesMap[normPhone] = p.name;
+      }
     });
+    setCallerNames(namesMap);
 
     logs.forEach((log) => {
       const normPhone = normalizePhone(log.phone_number_calling);
@@ -383,7 +389,7 @@ export default function Dashboard() {
                       className="grid grid-cols-3 items-center px-5 py-3.5 hover:bg-black/[0.02] transition-colors"
                     >
                       <span className="text-xs font-semibold text-foreground">{formatPhone(call.phone_number_calling)}</span>
-                      <span className="text-xs text-muted-foreground capitalize">{call.action ?? "Texted"}</span>
+                      <span className="text-xs text-muted-foreground capitalize">{call.action || "unknown"}</span>
                       <span className="text-xs text-muted-foreground text-right">{timeAgo(call.time)}</span>
                     </motion.div>
                   ))}
@@ -409,10 +415,9 @@ export default function Dashboard() {
               </div>
 
               {/* Table header */}
-              <div className="grid grid-cols-[1fr_auto_auto] px-5 py-2 border-b border-border bg-black/[0.02] gap-4">
-                <span className="text-[11px] font-semibold text-muted-foreground">Message</span>
-                <span className="text-[11px] font-semibold text-muted-foreground">Sender</span>
-                <span className="text-[11px] font-semibold text-muted-foreground">Time</span>
+              <div className="grid grid-cols-[1fr_auto] px-5 py-2 border-b border-border bg-black/[0.02] gap-4">
+                <span className="text-[11px] font-semibold text-muted-foreground">Sender & Message</span>
+                <span className="text-[11px] font-semibold text-muted-foreground text-right">Time</span>
               </div>
 
               {loading ? (
@@ -425,19 +430,21 @@ export default function Dashboard() {
               ) : (
                 <div className="divide-y divide-border">
                   {uniqueMessages.map((msg, i) => {
+                    const norm = (msg.caller_id ?? "").replace(/\D/g, "").length >= 10 ? (msg.caller_id ?? "").replace(/\D/g, "").slice(-10) : (msg.caller_id ?? "").replace(/\D/g, "");
+                    const displayName = callerNames[norm] || formatPhone(msg.caller_id);
+
                     return (
-                      <div key={msg.id} className="grid grid-cols-[1fr_auto_auto] items-center px-5 py-3 hover:bg-black/[0.02] transition-colors gap-4">
-                        <div className="flex items-center gap-2.5 min-w-0">
+                      <div key={msg.id} className="grid grid-cols-[1fr_auto] items-center px-5 py-3 hover:bg-black/[0.02] transition-colors gap-4">
+                        <div className="flex items-center gap-3 min-w-0">
                           <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
                             <User className="w-4 h-4" />
                           </div>
                           <div className="min-w-0">
-                            <p className="text-xs font-semibold text-foreground truncate">{formatPhone(msg.caller_id)}</p>
-                            <p className="text-[11px] text-muted-foreground truncate">{msg.text ?? "Auto-reply sent"}</p>
+                            <p className="text-xs font-semibold text-foreground truncate">{displayName}</p>
+                            <p className="text-[11px] text-muted-foreground truncate opacity-80">{msg.text ?? "Auto-reply sent"}</p>
                           </div>
                         </div>
-                        <span className="text-xs text-muted-foreground whitespace-nowrap">{profile?.full_name ? profile.full_name.split(" ")[0] + " " + (profile.full_name.split(" ")[1]?.[0] ?? "") + "." : "—"}</span>
-                        <span className="text-xs text-muted-foreground whitespace-nowrap">{timeAgo(msg.created_at)}</span>
+                        <span className="text-xs text-muted-foreground whitespace-nowrap text-right">{timeAgo(msg.created_at)}</span>
                       </div>
                     );
                   })}
