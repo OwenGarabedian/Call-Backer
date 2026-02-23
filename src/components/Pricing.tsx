@@ -49,11 +49,11 @@ const faqs = [
   },
   {
     question: "Can I keep my current phone number?",
-    answer: "Yes. You simply set up 'Conditional Call Forwarding' on your existing line. It takes 2 minutes. When you don't answer, we pick up.",
+    answer: "Yes. You simply set up online number that fowards calls to your existing line. It takes 2 minutes.",
   },
   {
     question: "Is there a long-term contract?",
-    answer: "Never. All plans are month-to-month. You can upgrade, downgrade, or cancel at any time with one click.",
+    answer: "All plans are month-to-month. You can upgrade, downgrade, or cancel at any time with one click.",
   },
 ];
 
