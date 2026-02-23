@@ -425,17 +425,15 @@ export default function Dashboard() {
               ) : (
                 <div className="divide-y divide-border">
                   {uniqueMessages.map((msg, i) => {
-                    const initials = (msg.caller_id ?? "?").replace(/\D/g, "").slice(-4, -2) || "?";
-                    const avatarColors = ["bg-violet-500", "bg-blue-500", "bg-emerald-500", "bg-rose-500"];
                     return (
                       <div key={msg.id} className="grid grid-cols-[1fr_auto_auto] items-center px-5 py-3 hover:bg-black/[0.02] transition-colors gap-4">
                         <div className="flex items-center gap-2.5 min-w-0">
-                          <div className={cn("w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 text-white text-[10px] font-bold", avatarColors[i % avatarColors.length])}>
-                            {initials}
+                          <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
+                            <User className="w-4 h-4" />
                           </div>
                           <div className="min-w-0">
-                            <p className="text-xs font-semibold truncate">{msg.text ?? "Auto-reply sent"}</p>
-                            <p className="text-[10px] text-muted-foreground truncate">{formatPhone(msg.caller_id)}</p>
+                            <p className="text-xs font-semibold text-foreground truncate">{formatPhone(msg.caller_id)}</p>
+                            <p className="text-[11px] text-muted-foreground truncate">{msg.text ?? "Auto-reply sent"}</p>
                           </div>
                         </div>
                         <span className="text-xs text-muted-foreground whitespace-nowrap">{profile?.full_name ? profile.full_name.split(" ")[0] + " " + (profile.full_name.split(" ")[1]?.[0] ?? "") + "." : "—"}</span>
