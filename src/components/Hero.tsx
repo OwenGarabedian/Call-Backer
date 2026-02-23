@@ -1,8 +1,16 @@
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
-import { PhoneMockup } from "./PhoneMockup";
 import { MagneticButton } from "./ui/magnetic-button";
-import { useRef, useState } from "react";
-import { Zap, TrendingUp, Clock, ArrowUpRight, CheckCircle2, Hammer, HardHat, ShieldCheck, Snowflake, Wrench, Smartphone } from "lucide-react"; 
+import { lazy, Suspense, useRef, useState } from "react";
+import { Zap, TrendingUp, Clock, ArrowUpRight, CheckCircle2, Hammer, HardHat, ShieldCheck, Snowflake, Wrench, Smartphone } from "lucide-react";
+
+// Lazy-load PhoneMockup so it downloads in the background while the user reads
+// the hero text. By the time they scroll into the animation it's ready.
+const PhoneMockup = lazy(() =>
+  import("./PhoneMockup").then((m) => ({ default: m.PhoneMockup }))
+);
+
+
+
 
 // --- 1. SHARED ASSETS ---
 const LOGOS = [
@@ -253,11 +261,13 @@ const DesktopHero = () => {
             </motion.div>
         </div>
 
-        {/* 3D Phone */}
+        {/* 3D Phone — lazy-loaded; downloads in background while user reads hero */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-20 perspective-1000 pt-20">
           <motion.div style={{ x: phoneX, rotateZ: phoneRotateZ, rotateY: phoneRotateY, scale: phoneScale, translateZ: 0, willChange: "transform" }} className="origin-center">
-               <PhoneMockup scrollUp={notificationY} stopFloating={isScrolling} isScrolling={isScrolling} />
-           </motion.div>
+            <Suspense fallback={null}>
+              <PhoneMockup scrollUp={notificationY} stopFloating={isScrolling} isScrolling={isScrolling} />
+            </Suspense>
+          </motion.div>
         </div>
 
         {/* Cards */}
