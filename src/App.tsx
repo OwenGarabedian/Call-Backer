@@ -17,6 +17,9 @@ import Settings from "./pages/Settings";
 import ProfileSettings from "./pages/ProfileSettings";
 import AutomationConfig from "./pages/AutomationConfig";
 import BusinessKnowledge from "./pages/BusinessKnowledge";
+import ControlCenter from "./pages/ControlCenter";
+import Support from "./pages/Support";
+import Payment from "./pages/Payment";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +43,9 @@ const App = () => (
           <Route path="/profileSettings" element={<ProfileSettings />} />
           <Route path="/automationConfig" element={<AutomationConfig />} />
           <Route path="/businessKnowledge" element={<BusinessKnowledge />} />
+          <Route path="/control-center" element={<ControlCenter />} />
+          <Route path="/support" element={<Support />} />
+          <Route path="/payment" element={<Payment />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

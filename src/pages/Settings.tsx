@@ -26,6 +26,7 @@ import {
 import { supabase } from "../lib/supabase";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
+import { Sidebar } from "../components/Sidebar";
 
 interface Profile {
   id: string;
@@ -112,48 +113,7 @@ export default function Settings() {
   return (
     <div className="flex h-screen overflow-hidden bg-gradient-main">
       {/* ── SIDEBAR ── */}
-      <aside
-        className="hidden lg:flex flex-col w-60 h-full border-r border-white/10 flex-shrink-0"
-        style={{ background: "linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%)" }}
-      >
-        <div className="flex items-center gap-2.5 px-6 py-5 border-b border-white/10">
-          <div className="w-8 h-8 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center">
-            <Phone className="w-3.5 h-3.5 text-white" strokeWidth={1.5} />
-          </div>
-          <span className="font-display text-sm font-bold tracking-tight text-white">Call Backer</span>
-        </div>
-
-        <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
-          {NAV.map(({ icon: Icon, label, to }) => (
-            <button
-              key={to}
-              onClick={() => go(to)}
-              className={cn(
-                "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 text-left",
-                location.pathname === to
-                  ? "bg-white/15 text-white shadow-sm"
-                  : "text-white/50 hover:text-white hover:bg-white/8"
-              )}
-            >
-              <Icon className="w-4 h-4 flex-shrink-0" />
-              {label}
-            </button>
-          ))}
-        </nav>
-
-        <div className="p-3 border-t border-white/10">
-          <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/8 transition-colors cursor-pointer">
-            <div className="w-8 h-8 rounded-full bg-white/10 border border-white/20 flex items-center justify-center flex-shrink-0">
-              <User className="w-4 h-4 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold truncate text-white">{profile?.full_name ?? "—"}</p>
-              <p className="text-xs text-white/50 truncate">{profile?.email ?? "—"}</p>
-            </div>
-            <LogOut onClick={handleLogout} className="w-4 h-4 text-white/30 flex-shrink-0 hover:text-red-400 transition-colors" />
-          </div>
-        </div>
-      </aside>
+      <Sidebar activeUserId={userId} />
 
       {/* ── MAIN CONTENT ── */}
       <div className="flex-1 flex flex-col overflow-hidden relative">
@@ -365,7 +325,7 @@ export default function Settings() {
             >
               <div className="glass-strong rounded-3xl border border-white/10 overflow-hidden shadow-lg">
                 <button
-                  onClick={() => go("/supportPage")}
+                  onClick={() => go("/support")}
                   className="w-full p-5 flex items-center justify-between hover:bg-white/[0.03] transition-colors group text-left"
                 >
                   <div className="flex items-center gap-4">
