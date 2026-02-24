@@ -3,79 +3,79 @@
 
   <!-- Public pages -->
   <url>
-    <loc>https://www.callbacker.com/</loc>
+    <loc>https://www.call-backer.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.callbacker.com/Pricing</loc>
+    <loc>https://www.call-backer.com/Pricing</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.callbacker.com/sign-in</loc>
+    <loc>https://www.call-backer.com/sign-in</loc>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.callbacker.com/sign-up</loc>
+    <loc>https://www.call-backer.com/sign-up</loc>
     <changefreq>yearly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.callbacker.com/support</loc>
+    <loc>https://www.call-backer.com/support</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
 
   <!-- App pages -->
   <url>
-    <loc>https://www.callbacker.com/dashboard</loc>
+    <loc>https://www.call-backer.com/dashboard</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.callbacker.com/calls</loc>
+    <loc>https://www.call-backer.com/calls</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.callbacker.com/messages</loc>
+    <loc>https://www.call-backer.com/messages</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.callbacker.com/database</loc>
+    <loc>https://www.call-backer.com/database</loc>
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.callbacker.com/control-center</loc>
+    <loc>https://www.call-backer.com/control-center</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.callbacker.com/payment</loc>
+    <loc>https://www.call-backer.com/payment</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.callbacker.com/settings</loc>
+    <loc>https://www.call-backer.com/settings</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.callbacker.com/profileSettings</loc>
+    <loc>https://www.call-backer.com/profileSettings</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.callbacker.com/automationConfig</loc>
+    <loc>https://www.call-backer.com/automationConfig</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://www.callbacker.com/businessKnowledge</loc>
+    <loc>https://www.call-backer.com/businessKnowledge</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
