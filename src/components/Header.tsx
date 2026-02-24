@@ -21,7 +21,7 @@ export const Header = () => {
       className="fixed top-0 left-0 right-0 z-50 px-4 md:px-6 py-3"
     >
       <div className="max-w-6xl mx-auto">
-        <div className="glass rounded-2xl px-5 py-3 flex items-center justify-between shadow-lg">
+        <div className="glass rounded-2xl px-5 py-3 flex items-center justify-between shadow-lg relative">
 
           {/* ── Logo ── */}
           <Link to="/" className="flex items-center gap-2.5 group select-none">
@@ -37,8 +37,8 @@ export const Header = () => {
             </span>
           </Link>
 
-          {/* ── Desktop Nav ── */}
-          <nav className="hidden md:flex items-center gap-1">
+          {/* ── Desktop Nav (absolutely centered) ── */}
+          <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
             {navLinks.map(({ label, href }) => {
               const active = location.pathname === href;
               return (
