@@ -10,14 +10,14 @@ import {
   LayoutGrid,
   Layers,
   Phone,
-  LogOut,
   Bell,
   User,
   Search,
   MapPin,
   Calendar,
   Zap,
-  Filter
+  Filter,
+  CheckCircle2,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { cn } from "@/lib/utils";
@@ -259,6 +259,8 @@ export default function DatabaseScreen() {
     return true; 
   });
 
+  const filterLabel = filterType === "leads" ? "Leads" : filterType === "booked" ? "Booked" : "All Contacts";
+
   return (
     <div className="flex h-screen overflow-hidden bg-gradient-main">
       
@@ -266,19 +268,12 @@ export default function DatabaseScreen() {
       <Sidebar activeUserId={routeUserId} />
 
       {/* ── MAIN CONTENT ── */}
-      <div className="flex-1 flex flex-col overflow-hidden relative">
-        
-        {/* Background Decorative Blurs */}
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-500/20 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-fuchsia-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="flex-1 flex flex-col overflow-hidden">
 
         {/* Top bar */}
-        <header className="flex items-center justify-between px-6 py-4 border-b border-border glass-strong flex-shrink-0 relative z-10">
+        <header className="flex items-center justify-between px-6 py-4 border-b border-border glass-strong flex-shrink-0">
           <div>
-            <h1 className="font-display text-xl font-bold flex items-center gap-2">
-              <Database className="w-5 h-5 text-indigo-500" />
-              {loading ? "CRM Database" : `CRM Database`}
-            </h1>
+            <h1 className="font-display text-xl font-bold">CRM Database</h1>
             <p className="text-xs text-muted-foreground mt-0.5">Manage and filter your captured leads.</p>
           </div>
           <div className="flex items-center gap-2">
@@ -296,175 +291,202 @@ export default function DatabaseScreen() {
         </header>
 
         {/* Scrollable body */}
-        <main className="flex-1 overflow-y-auto p-6 space-y-6 relative z-10">
-          
-          {/* ── TOP ACTION BAR & STATS ── */}
-          <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
-              
-              {/* Stats Pills */}
-              <div className="flex flex-wrap items-center gap-3">
-                  <div className="glass-strong border border-border px-4 py-2 rounded-full flex items-center gap-2 shadow-sm">
-                      <User className="w-4 h-4 text-indigo-500" />
-                      <span className="text-xs font-semibold text-muted-foreground">Total:</span>
-                      <span className="text-sm font-bold text-foreground">{stats.totalCustomers}</span>
-                  </div>
-                  <div className="glass-strong border border-border px-4 py-2 rounded-full flex items-center gap-2 shadow-sm">
-                      <Zap className="w-4 h-4 text-emerald-500" />
-                      <span className="text-xs font-semibold text-muted-foreground">Engaged Rate:</span>
-                      <span className="text-sm font-bold text-foreground">{stats.engagedPercent}%</span>
-                  </div>
-                  <div className="glass-strong border border-border px-4 py-2 rounded-full flex items-center gap-2 shadow-sm">
-                      <Calendar className="w-4 h-4 text-amber-500" />
-                      <span className="text-xs font-semibold text-muted-foreground">Appointments Booked:</span>
-                      <span className="text-sm font-bold text-foreground">{stats.appointments}</span>
-                  </div>
-              </div>
+        <main className="flex-1 overflow-y-auto p-6 space-y-5">
 
-              {/* Search & Filter Controls */}
-              <div className="flex flex-col sm:flex-row items-center gap-3">
-                  <div className="relative w-full sm:w-64">
-                      <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                      <input 
-                          type="text" 
-                          placeholder="Search names, phones, needs..."
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          className="w-full bg-background/50 border border-border text-sm rounded-xl pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm hidden md:block"
-                      />
-                      {/* Responsive small search */}
-                      <input 
-                          type="text" 
-                          placeholder="Search..."
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          className="w-full bg-background/50 border border-border text-sm rounded-xl pl-9 pr-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all shadow-sm md:hidden"
-                      />
-                  </div>
-                  
-                  {/* FIXED: Tab Buttons */}
-                  <div className="flex items-center bg-background/50 border border-border rounded-xl p-1 shadow-sm w-full sm:w-auto">
-                      <button 
-                          onClick={() => setFilterType("all")}
-                          className={cn("px-4 py-1.5 text-xs font-semibold rounded-lg transition-all flex-1 sm:flex-none text-center", filterType === "all" ? "bg-foreground text-background shadow-md" : "text-muted-foreground hover:text-foreground")}
-                      >
-                          All
-                      </button>
-                      <button 
-                          onClick={() => setFilterType("leads")}
-                          className={cn("px-4 py-1.5 text-xs font-semibold rounded-lg transition-all flex-1 sm:flex-none text-center", filterType === "leads" ? "bg-foreground text-background shadow-md" : "text-muted-foreground hover:text-foreground")}
-                      >
-                          Leads
-                      </button>
-                      <button 
-                          onClick={() => setFilterType("booked")}
-                          className={cn("px-4 py-1.5 text-xs font-semibold rounded-lg transition-all flex-1 sm:flex-none text-center", filterType === "booked" ? "bg-foreground text-background shadow-md" : "text-muted-foreground hover:text-foreground")}
-                      >
-                          Booked
-                      </button>
-                  </div>
+          {/* ── STAT CARDS ── */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="glass-strong rounded-2xl border border-border p-5 shadow-sm flex items-center gap-4"
+            >
+              <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center flex-shrink-0">
+                <User className="w-6 h-6 text-indigo-500" />
               </div>
+              <div>
+                <div className="text-[10px] font-bold text-muted-foreground tracking-wider mb-0.5">TOTAL CONTACTS</div>
+                <div className="text-3xl font-black font-display text-foreground leading-none">{stats.totalCustomers}</div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.07 }}
+              className="glass-strong rounded-2xl border border-border p-5 shadow-sm flex items-center gap-4"
+            >
+              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                <Zap className="w-6 h-6 text-emerald-500" />
+              </div>
+              <div>
+                <div className="text-[10px] font-bold text-muted-foreground tracking-wider mb-0.5">ENGAGED RATE</div>
+                <div className="text-3xl font-black font-display text-foreground leading-none">{stats.engagedPercent}%</div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.14 }}
+              className="glass-strong rounded-2xl border border-border p-5 shadow-sm flex items-center gap-4"
+            >
+              <div className="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                <Calendar className="w-6 h-6 text-amber-500" />
+              </div>
+              <div>
+                <div className="text-[10px] font-bold text-muted-foreground tracking-wider mb-0.5">BOOKED</div>
+                <div className="text-3xl font-black font-display text-foreground leading-none">{stats.appointments}</div>
+              </div>
+            </motion.div>
           </div>
 
-          {/* ── CARD GRID ── */}
-          {loading ? (
-             <div className="flex flex-col items-center justify-center h-64 gap-4">
-                 <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
-                 <p className="text-sm text-muted-foreground font-medium">Loading CRM data...</p>
-             </div>
-          ) : filteredProfiles.length === 0 ? (
-             <div className="flex flex-col items-center justify-center h-64 gap-3 bg-secondary/30 rounded-3xl border border-dashed border-border/60">
-                 <Filter className="w-10 h-10 text-muted-foreground/30" />
-                 <p className="text-sm font-semibold text-foreground">No profiles found.</p>
-                 <p className="text-xs text-muted-foreground">Try adjusting your search or filters.</p>
-             </div>
-          ) : (
-            <motion.div 
-               layout
-               className="flex flex-col w-full max-w-5xl mx-auto divide-y divide-black/5 dark:divide-white/5 pb-20"
-            >
-               <AnimatePresence>
-                 {filteredProfiles.map((p, idx) => {
+          {/* ── TABLE CONTAINER ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="glass-strong rounded-2xl border border-border overflow-hidden shadow-sm"
+          >
+            {/* Table header row with search + filter */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between px-6 py-4 border-b border-border bg-foreground/[0.01] gap-3">
+              <h2 className="font-display text-sm font-bold">Contact Database</h2>
+              <div className="flex items-center gap-3">
+                {/* Search */}
+                <div className="relative">
+                  <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="bg-background/50 border border-border text-sm rounded-xl pl-9 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all w-48"
+                  />
+                </div>
+                {/* Filter tabs */}
+                <div className="flex items-center bg-background/50 border border-border rounded-xl p-1">
+                  {(["all", "leads", "booked"] as const).map((f) => (
+                    <button
+                      key={f}
+                      onClick={() => setFilterType(f)}
+                      className={cn(
+                        "px-3 py-1.5 text-xs font-semibold rounded-lg transition-all capitalize",
+                        filterType === f ? "bg-foreground text-background shadow-md" : "text-muted-foreground hover:text-foreground"
+                      )}
+                    >
+                      {f === "all" ? "All" : f === "leads" ? "Leads" : "Booked"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Column headers */}
+            <div className="grid grid-cols-[2fr_1.5fr_1fr_1fr] px-6 py-3 border-b border-border bg-black/[0.02] gap-4">
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Contact</span>
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Need</span>
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Location</span>
+              <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider text-right pr-2">Status</span>
+            </div>
+
+            {loading ? (
+              <div className="flex flex-col items-center justify-center h-48 gap-4">
+                <div className="w-8 h-8 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin" />
+                <p className="text-sm text-muted-foreground font-medium">Loading contacts…</p>
+              </div>
+            ) : filteredProfiles.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-48 gap-3 text-muted-foreground">
+                <Filter className="w-8 h-8 opacity-20" />
+                <p className="text-sm">No profiles found.</p>
+                <p className="text-xs opacity-70">Try adjusting your search or filters.</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-border">
+                <AnimatePresence>
+                  {filteredProfiles.map((p, idx) => {
                     const safeNameStr = p.name ? String(p.name) : "";
                     const hasName = safeNameStr.trim() !== "" && safeNameStr.toLowerCase() !== "null";
-                    
+
                     const safeApptStr = p.appointment ? String(p.appointment) : "";
                     const hasAppointment = safeApptStr.trim() !== "" && safeApptStr.toLowerCase() !== "null";
-                    
+
                     const isEngaged = p.isActiveLead;
 
+                    const hasNeed = p.need && String(p.need) !== "null" && String(p.need).trim() !== "";
+                    const hasLoc  = p.location && String(p.location) !== "null" && String(p.location).trim() !== "";
+
                     return (
-                        <motion.div
-                           layout
-                           initial={{ opacity: 0, y: 10 }}
-                           animate={{ opacity: 1, y: 0 }}
-                           exit={{ opacity: 0, scale: 0.95 }}
-                           transition={{ duration: 0.3, delay: idx > 15 ? 0 : idx * 0.02 }}
-                           key={p.id}
-                           onClick={() => navigate(`/text-profile?caller_id=${encodeURIComponent(p.caller_id)}`, { state: { id: routeUserId } })}
-                           className="group flex flex-col xl:flex-row xl:items-center justify-between py-4 sm:py-5 px-2 sm:px-6 hover:bg-black/[0.02] dark:hover:bg-white/[0.02] transition-colors cursor-pointer rounded-2xl sm:rounded-3xl"
-                        >
-                            {/* Left: Avatar & Text */}
-                            <div className="flex items-center gap-4 sm:gap-5 min-w-0 mb-3 xl:mb-0 xl:w-1/3">
-                                <div className={cn(
-                                    "w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-display text-base sm:text-lg font-bold flex-shrink-0 transition-transform duration-300 group-hover:scale-105",
-                                    hasName ? "bg-indigo-50/50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-500/20" : "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500"
-                                )}>
-                                    {hasName ? safeNameStr.charAt(0).toUpperCase() : "#"}
-                                </div>
+                      <motion.div
+                        layout
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0, scale: 0.98 }}
+                        transition={{ duration: 0.2, delay: idx > 20 ? 0 : idx * 0.02 }}
+                        key={p.id}
+                        onClick={() => navigate(`/text-profile?caller_id=${encodeURIComponent(p.caller_id)}`, { state: { id: routeUserId } })}
+                        className="grid grid-cols-[2fr_1.5fr_1fr_1fr] items-center px-6 py-4 hover:bg-black/[0.02] transition-colors cursor-pointer gap-4"
+                      >
+                        {/* Contact cell */}
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 transition-colors flex items-center justify-center flex-shrink-0 shadow-sm">
+                            <Phone className="w-4 h-4 text-indigo-500" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-foreground truncate">
+                              {hasName ? safeNameStr : formatPhone(p.caller_id)}
+                            </p>
+                            {hasName && (
+                              <p className="text-xs text-muted-foreground">{formatPhone(p.caller_id)}</p>
+                            )}
+                          </div>
+                        </div>
 
-                                <div className="min-w-0">
-                                    <h3 className="font-display font-bold text-gray-900 dark:text-gray-100 text-base sm:text-lg truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                                        {hasName ? safeNameStr : "Unknown Caller"}
-                                    </h3>
-                                    <p className="text-[13px] sm:text-[14px] text-gray-500 dark:text-gray-400 font-medium mt-0.5 tracking-wide">
-                                        {formatPhone(p.caller_id)}
-                                    </p>
-                                </div>
+                        {/* Need cell */}
+                        <div className="flex items-center">
+                          {hasNeed ? (
+                            <span className="text-sm text-muted-foreground">{String(p.need)}</span>
+                          ) : (
+                            <span className="text-sm text-muted-foreground">—</span>
+                          )}
+                        </div>
+
+                        {/* Location cell */}
+                        <div className="flex items-center gap-1.5">
+                          {hasLoc ? (
+                            <>
+                              <MapPin className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                              <span className="text-xs font-semibold text-muted-foreground uppercase truncate">{String(p.location)}</span>
+                            </>
+                          ) : (
+                            <span className="text-xs text-muted-foreground/50 italic">—</span>
+                          )}
+                        </div>
+
+                        {/* Status cell */}
+                        <div className="flex items-center justify-end">
+                          {hasAppointment ? (
+                            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-500/10 text-amber-600 rounded-lg">
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              <span className="text-[11px] font-bold tracking-wide">BOOKED</span>
                             </div>
-
-                            {/* Middle & Right: Details & Status */}
-                            <div className="flex flex-row items-center justify-between xl:justify-end gap-4 sm:gap-8 xl:w-2/3 ml-[3.5rem] sm:ml-[4.25rem] xl:ml-0">
-                                {/* Need & Location */}
-                                <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-6 min-w-0 flex-1">
-                                    <div className="flex-1 min-w-0">
-                                        {p.need && String(p.need) !== "null" && String(p.need).trim() !== "" ? (
-                                            <p className="text-[14px] sm:text-[15px] text-gray-800 dark:text-gray-200 truncate font-medium transition-colors">Needs {String(p.need)}</p>
-                                        ) : (
-                                            <p className="text-[13px] sm:text-[14px] text-gray-400 dark:text-gray-500 italic">No notes</p>
-                                        )}
-                                    </div>
-
-                                    {p.location && String(p.location) !== "null" && String(p.location).trim() !== "" && (
-                                        <div className="flex items-center gap-1.5 w-24 sm:w-32 flex-shrink-0">
-                                            <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 group-hover:text-indigo-400 transition-colors" />
-                                            <span className="text-[11px] sm:text-[12px] font-bold text-gray-500 truncate uppercase">{String(p.location)}</span>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* FIXED Status Indicators */}
-                                <div className="flex items-center justify-end w-24 flex-shrink-0">
-                                    {hasAppointment ? (
-                                        <span className="flex items-center gap-1.5 text-amber-600 text-[10px] font-bold tracking-widest uppercase">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.6)]" /> BOOKED
-                                        </span>
-                                    ) : isEngaged ? (
-                                        <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-500 text-[10px] font-bold tracking-widest uppercase">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.6)]" /> ENGAGED
-                                        </span>
-                                    ) : (
-                                        <span className="flex items-center gap-1.5 text-blue-600 dark:text-blue-500 text-[10px] font-bold tracking-widest uppercase">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500" /> ACTIVE LEAD
-                                        </span>
-                                    )}
-                                </div>
+                          ) : isEngaged ? (
+                            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/10 text-emerald-600 rounded-lg">
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              <span className="text-[11px] font-bold tracking-wide">ENGAGED</span>
                             </div>
-                        </motion.div>
-                    )
-                 })}
-               </AnimatePresence>
-            </motion.div>
-          )}
+                          ) : (
+                            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-blue-500/10 text-blue-600 rounded-lg">
+                              <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                              <span className="text-[11px] font-bold tracking-wide">LEAD</span>
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
+              </div>
+            )}
+          </motion.div>
 
         </main>
       </div>
