@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Calculator, Lock, Bot, MessageSquare, Calendar, Phone, Database, Check, Plus, Minus, ArrowLeft } from "lucide-react";
 import Lenis from "@studio-freight/lenis";
 
@@ -146,6 +147,7 @@ const FAQItem = ({ faq, index }: { faq: typeof faqs[0]; index: number }) => {
 // --- 4. THE SECTION CONTENT ---
 
 export const Pricing = () => {
+  const navigate = useNavigate();
   return (
     <div className="pt-32 pb-20 relative">
       
@@ -245,7 +247,8 @@ export const Pricing = () => {
              <div className="relative z-20 mt-auto">
                 <MagneticButton 
                   variant={plan.highlight && !plan.comingSoon ? "primary" : "secondary"} 
-                  className={`w-full justify-center py-4 ${plan.comingSoon ? "cursor-not-allowed opacity-70 pointer-events-none" : ""} ${!plan.highlight && "bg-neutral-50 border-neutral-200"}`}
+                  className={`w-full justify-center py-4 ${!plan.highlight && "bg-neutral-50 border-neutral-200"}`}
+                  onClick={() => navigate("/sign-up")}
                 >
                   {plan.buttonText}
                 </MagneticButton>

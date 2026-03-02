@@ -1,10 +1,12 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { MagneticButton } from "./ui/magnetic-button";
 import { ArrowRight } from "lucide-react";
 
 export const CTA = () => {
   const sectionRef = useRef<HTMLElement>(null);
+  const navigate = useNavigate();
   const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   return (
@@ -35,7 +37,7 @@ export const CTA = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <MagneticButton variant="primary" size="lg" className="group">
+            <MagneticButton variant="primary" size="lg" className="group" onClick={() => navigate("/sign-up")}>
               <span className="flex items-center gap-2">
                 Get Early Access
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
