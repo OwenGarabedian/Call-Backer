@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { DemoSidebar } from "@/components/DemoSidebar";
 import { DemoBanner } from "@/components/DemoBanner";
+import { DemoWalkthrough } from "@/components/DemoWalkthrough";
 import { DEMO_CALLS } from "@/lib/demoData";
 
 const CALLER_NAMES: Record<string, string> = {
@@ -44,6 +45,7 @@ export default function DemoCalls() {
   return (
     <div className="flex h-screen overflow-hidden bg-gradient-main">
       <DemoSidebar />
+      <DemoWalkthrough />
 
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top bar */}

@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { DemoSidebar } from "@/components/DemoSidebar";
 import { DemoBanner } from "@/components/DemoBanner";
+import { DemoWalkthrough } from "@/components/DemoWalkthrough";
 import { DEMO_USER, DEMO_CALLS, DEMO_MESSAGES, DEMO_STATS } from "@/lib/demoData";
 
 function formatPhone(num?: string) {
@@ -86,6 +87,7 @@ export default function DemoDashboard() {
   return (
     <div className="flex h-screen overflow-hidden bg-gradient-main">
       <DemoSidebar />
+      <DemoWalkthrough forceOpen />
 
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top bar */}

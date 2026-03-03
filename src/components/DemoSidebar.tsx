@@ -8,17 +8,19 @@ import {
   Layers,
   Phone,
   UserPlus,
+  Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DEMO_USER } from "@/lib/demoData";
 
 const NAV = [
-  { icon: LayoutGrid,   label: "Dashboard",      to: "/demo" },
-  { icon: PhoneMissed,  label: "Missed Calls",    to: "/demo/calls" },
-  { icon: MessageSquare,label: "Messages",        to: "/demo/messages" },
-  { icon: Database,     label: "Database",        to: "/demo/database" },
-  { icon: LayoutList,   label: "Control Center",  to: "/demo/control-center" },
-  { icon: Layers,       label: "Billing",         to: "/demo/billing" },
+  { icon: LayoutGrid,    label: "Dashboard",      to: "/demo" },
+  { icon: PhoneMissed,   label: "Missed Calls",    to: "/demo/calls" },
+  { icon: MessageSquare, label: "Messages",        to: "/demo/messages" },
+  { icon: Database,      label: "Database",        to: "/demo/database" },
+  { icon: LayoutList,    label: "Control Center",  to: "/demo/control-center" },
+  { icon: Layers,        label: "Billing",         to: "/demo/billing" },
+  { icon: Settings,      label: "Settings",        to: "/demo/settings" },
 ];
 
 export function DemoSidebar() {

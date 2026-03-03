@@ -26,6 +26,7 @@ import DemoCalls from "./pages/DemoCalls";
 import DemoMessages from "./pages/DemoMessages";
 import DemoDatabase from "./pages/DemoDatabase";
 import DemoControlCenter from "./pages/DemoControlCenter";
+import DemoSettings from "./pages/DemoSettings";
 
 const queryClient = new QueryClient();
 
@@ -59,6 +60,8 @@ const App = () => (
           <Route path="/demo/messages" element={<DemoMessages />} />
           <Route path="/demo/database" element={<DemoDatabase />} />
           <Route path="/demo/control-center" element={<DemoControlCenter />} />
+          <Route path="/demo/settings" element={<DemoSettings />} />
+          <Route path="/demo/billing" element={<DemoSettings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

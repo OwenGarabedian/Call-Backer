@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import { DemoSidebar } from "@/components/DemoSidebar";
 import { DemoBanner } from "@/components/DemoBanner";
+import { DemoWalkthrough } from "@/components/DemoWalkthrough";
 import { DEMO_MESSAGES } from "@/lib/demoData";
 
 const CALLER_NAMES: Record<string, string> = {
@@ -100,6 +101,7 @@ export default function DemoMessages() {
   return (
     <div className="flex h-screen overflow-hidden bg-gradient-main">
       <DemoSidebar />
+      <DemoWalkthrough />
 
       <div className="flex-1 flex overflow-hidden flex-col">
         {/* Banner at top of the right panel */}

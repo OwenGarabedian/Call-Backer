@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { DemoSidebar } from "@/components/DemoSidebar";
 import { DemoBanner } from "@/components/DemoBanner";
+import { DemoWalkthrough } from "@/components/DemoWalkthrough";
 
 const campaigns = [
   {
@@ -43,6 +44,7 @@ export default function DemoControlCenter() {
   return (
     <div className="flex h-screen overflow-hidden bg-[#fafafa] font-sans">
       <DemoSidebar />
+      <DemoWalkthrough />
 
       <div className="flex-1 flex flex-col overflow-hidden relative">
         {/* Background blurs */}
