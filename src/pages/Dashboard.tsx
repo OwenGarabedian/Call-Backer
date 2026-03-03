@@ -220,7 +220,7 @@ export default function Dashboard() {
       href: "/messages",
     },
     {
-      title: "Leads Captured",
+      title: "Leads Contacted",
       value: loading ? "—" : stats.totalCustomers,
       sub: "Unique potential clients",
       icon: Zap,
