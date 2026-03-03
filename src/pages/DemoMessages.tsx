@@ -107,9 +107,16 @@ export default function DemoMessages() {
         {/* Banner at top of the right panel */}
         <DemoBanner />
 
+        {/* Mobile top spacer */}
+        <div className="block lg:hidden h-14" />
+
+        {/* Split pane */}
         <div className="flex-1 flex overflow-hidden">
           {/* LEFT: conversation list */}
-          <div className="w-80 border-r border-border flex flex-col bg-foreground/[0.01]">
+          <div className={cn(
+            "w-full lg:w-80 border-r border-border flex flex-col bg-foreground/[0.01]",
+            activeCallerId ? "hidden lg:flex" : "flex"
+          )}>
             <header className="px-5 py-4 border-b border-border flex items-center justify-between flex-shrink-0 glass-strong h-16">
               <h1 className="font-display text-lg font-bold">Inbox</h1>
               <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
@@ -169,12 +176,22 @@ export default function DemoMessages() {
           </div>
 
           {/* RIGHT: active chat */}
-          <div className="flex-1 flex flex-col glass-strong relative">
+          <div className={cn(
+            "flex-1 flex flex-col glass-strong relative",
+            activeCallerId ? "flex" : "hidden lg:flex"
+          )}>
             {activeConversation ? (
               <>
                 {/* Chat header */}
                 <header className="px-6 py-4 border-b border-border flex items-center justify-between flex-shrink-0 h-16 bg-background/50 backdrop-blur-md z-10 sticky top-0">
                   <div className="flex items-center gap-3">
+                    {/* Mobile back button */}
+                    <button
+                      onClick={() => setActiveCallerId(null)}
+                      className="lg:hidden mr-1 w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                    </button>
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center shadow-md text-white">
                       <User className="w-5 h-5" />
                     </div>
@@ -268,8 +285,8 @@ export default function DemoMessages() {
                   <div ref={messagesEndRef} />
                 </div>
 
-                {/* Input */}
-                <div className="p-4 bg-background/50 backdrop-blur-md border-t border-border mt-auto relative">
+                  {/* Chat Input */}
+                  <div className="p-4 bg-background/50 backdrop-blur-md border-t border-border mt-auto pb-24 lg:pb-4 relative">
                   <div className="flex items-center gap-3 bg-white dark:bg-black/20 border border-border rounded-full p-1.5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500/20 focus-within:border-indigo-500 transition-all">
                     <input
                       type="text"

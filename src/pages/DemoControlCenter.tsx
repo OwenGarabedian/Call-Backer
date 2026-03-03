@@ -51,8 +51,8 @@ export default function DemoControlCenter() {
         <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] bg-amber-500/5 rounded-full blur-[100px] pointer-events-none" />
         <div className="absolute top-[20%] left-[-10%] w-[40%] h-[40%] bg-purple-500/5 rounded-full blur-[100px] pointer-events-none" />
 
-        {/* Top bar */}
-        <header className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-white/80 backdrop-blur-md flex-shrink-0 z-10 shadow-sm relative">
+        {/* Top bar — desktop only */}
+        <header className="hidden lg:flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-white/80 backdrop-blur-md flex-shrink-0 z-10 shadow-sm relative">
           <div className="flex items-center gap-4">
             <button
               onClick={() => navigate("/demo")}
@@ -68,7 +68,7 @@ export default function DemoControlCenter() {
         </header>
 
         {/* Scrollable body */}
-        <main className="flex-1 overflow-y-auto z-10 relative pb-16">
+        <main className="flex-1 overflow-y-auto z-10 relative pt-14 lg:pt-0 pb-24 lg:pb-16">
           <DemoBanner />
 
           <div className="px-6 lg:px-10 pt-6">

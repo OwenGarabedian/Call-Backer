@@ -90,8 +90,8 @@ export default function DemoDashboard() {
       <DemoWalkthrough forceOpen />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top bar */}
-        <header className="flex items-center justify-between px-6 py-4 border-b border-border glass-strong flex-shrink-0">
+        {/* Top bar — desktop only */}
+        <header className="hidden lg:flex items-center justify-between px-6 py-4 border-b border-border glass-strong flex-shrink-0">
           <div>
             <h1 className="font-display text-xl font-bold">
               Welcome, {DEMO_USER.full_name}
@@ -113,7 +113,7 @@ export default function DemoDashboard() {
         </header>
 
         {/* Scrollable body */}
-        <main className="flex-1 overflow-y-auto space-y-5 pb-8">
+        <main className="flex-1 overflow-y-auto space-y-5 pb-8 pt-14 lg:pt-0 pb-24 lg:pb-8">
           <DemoBanner />
 
           {/* KPI cards */}

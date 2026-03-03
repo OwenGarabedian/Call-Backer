@@ -27,8 +27,8 @@ export default function DemoSettings() {
       <div className="flex-1 flex flex-col overflow-hidden relative">
         <div className="absolute top-0 inset-x-0 h-64 bg-indigo-500/10 blur-[100px] pointer-events-none" />
 
-        {/* Top bar */}
-        <header className="flex items-center justify-between px-6 py-4 border-b border-border glass-strong flex-shrink-0 z-10">
+        {/* Top bar — desktop only */}
+        <header className="hidden lg:flex items-center justify-between px-6 py-4 border-b border-border glass-strong flex-shrink-0 z-10">
           <div>
             <h1 className="font-display text-xl font-bold">Settings</h1>
             <p className="text-xs text-muted-foreground mt-0.5">Manage your account, automations, and billing.</p>
@@ -48,7 +48,7 @@ export default function DemoSettings() {
         </header>
 
         {/* Scrollable body */}
-        <main className="flex-1 overflow-y-auto z-10 relative pb-16 space-y-5">
+        <main className="flex-1 overflow-y-auto z-10 relative pt-14 lg:pt-0 pb-24 lg:pb-16 space-y-5">
           <DemoBanner />
 
           <div className="px-6 lg:px-10">

@@ -48,8 +48,8 @@ export default function DemoCalls() {
       <DemoWalkthrough />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top bar */}
-        <header className="flex items-center justify-between px-6 py-4 border-b border-border glass-strong flex-shrink-0">
+        {/* Top bar — desktop only */}
+        <header className="hidden lg:flex items-center justify-between px-6 py-4 border-b border-border glass-strong flex-shrink-0">
           <div>
             <h1 className="font-display text-xl font-bold">Missed Calls</h1>
           </div>
@@ -68,7 +68,7 @@ export default function DemoCalls() {
         </header>
 
         {/* Scrollable body */}
-        <main className="flex-1 overflow-y-auto pb-8 space-y-5">
+        <main className="flex-1 overflow-y-auto pt-14 lg:pt-0 pb-24 lg:pb-8 space-y-5">
           <DemoBanner />
 
           <div className="px-6 space-y-5">
@@ -114,6 +114,9 @@ export default function DemoCalls() {
               <div className="px-6 py-4 border-b border-border bg-foreground/[0.01]">
                 <h2 className="font-display text-sm font-bold">Recent Logs</h2>
               </div>
+
+              <div className="overflow-x-auto">
+                <div className="min-w-[560px]">
 
               <div className="grid grid-cols-[2fr_1.5fr_1fr_1.5fr] px-6 py-3 border-b border-border bg-black/[0.02] gap-4">
                 <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Caller</span>
@@ -171,6 +174,8 @@ export default function DemoCalls() {
                     </div>
                   );
                 })}
+              </div>
+                </div>
               </div>
             </motion.div>
           </div>
