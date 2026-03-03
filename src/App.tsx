@@ -21,6 +21,11 @@ import ControlCenter from "./pages/ControlCenter";
 import Support from "./pages/Support";
 import Payment from "./pages/Payment";
 import HowItWorks from "./pages/HowItWorks";
+import DemoDashboard from "./pages/DemoDashboard";
+import DemoCalls from "./pages/DemoCalls";
+import DemoMessages from "./pages/DemoMessages";
+import DemoDatabase from "./pages/DemoDatabase";
+import DemoControlCenter from "./pages/DemoControlCenter";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +53,12 @@ const App = () => (
           <Route path="/support" element={<Support />} />
           <Route path="/payment" element={<Payment />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
+          {/* ── DEMO ROUTES (no auth required) ── */}
+          <Route path="/demo" element={<DemoDashboard />} />
+          <Route path="/demo/calls" element={<DemoCalls />} />
+          <Route path="/demo/messages" element={<DemoMessages />} />
+          <Route path="/demo/database" element={<DemoDatabase />} />
+          <Route path="/demo/control-center" element={<DemoControlCenter />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
