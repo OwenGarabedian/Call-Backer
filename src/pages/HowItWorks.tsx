@@ -13,9 +13,13 @@ import {
   Clock,
   Shield,
   Star,
+  Phone,
+  ListChecks,
+  Wrench,
+  Megaphone,
 } from "lucide-react";
 
-// ── Shared helpers ──────────────────────────────────────────────────────────
+// ── Shared helpers ───────────────────────────────────────────────────────────
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 28 },
   whileInView: { opacity: 1, y: 0 },
@@ -37,59 +41,105 @@ const Card = ({
   </div>
 );
 
-// ── Step data ───────────────────────────────────────────────────────────────
-const STEPS = [
+// ── Getting Started Steps ────────────────────────────────────────────────────
+const SETUP_STEPS = [
   {
     number: "01",
-    icon: PhoneOff,
-    label: "Missed Call Detected",
+    icon: ListChecks,
+    label: "Sign Up & Onboard",
     color: "text-violet-500",
     bg: "bg-violet-50",
     border: "border-violet-100",
     description:
-      "The moment a call goes unanswered — whether you're on another job, on the roof, or just busy — Call Backer instantly detects it.",
-    detail:
-      "Works 24 / 7, including nights and weekends. Zero setup after onboarding.",
+      "Fill out a quick sign-up form with your business details — name, services, and a few lines about your company. That's all we need to get started.",
+    detail: "Takes about 5 minutes. No tech skills required.",
   },
   {
     number: "02",
-    icon: MessageSquare,
-    label: "Instant AI Text Sent",
+    icon: Wrench,
+    label: "We Build It for You (1–2 Weeks)",
     color: "text-blue-500",
     bg: "bg-blue-50",
     border: "border-blue-100",
     description:
-      "Within seconds, your lead receives a personalized text from your business number. The message is warm, professional, and on-brand.",
+      "Our team sets everything up on the back end during your 1–2 week onboarding window. We configure your AI, train it on your business, and set up your dedicated Call Backer number. You don't touch a thing.",
     detail:
-      "Our AI is trained on your services and business details so every reply sounds like you wrote it.",
+      "We handle 100% of the technical setup. You'll get a heads-up when you're live.",
   },
   {
     number: "03",
-    icon: UserCheck,
-    label: "Lead Qualified",
+    icon: Phone,
+    label: "Your New Number Goes on Everything",
     color: "text-emerald-500",
     bg: "bg-emerald-50",
     border: "border-emerald-100",
     description:
-      "Call Backer continues the conversation, asking the right questions to understand the job scope, location, and urgency — all by text.",
+      "Once live, you'll swap your advertising number to your new Call Backer number — on your website, Google Business, truck decals, yard signs, and any digital ads. Your real phone number stays private and unchanged.",
     detail:
-      "Hot leads are flagged and moved to the top of your dashboard so you always follow up first.",
+      "Your old posters or flyers that already have your personal number on them? No problem — those calls will still ring your cell like normal. Only the new number feeds into the system.",
   },
   {
     number: "04",
-    icon: Calendar,
-    label: "Job Booked",
+    icon: MessageSquare,
+    label: "Missed Calls Trigger Instant AI Texts",
     color: "text-orange-500",
     bg: "bg-orange-50",
     border: "border-orange-100",
     description:
-      "Once qualified, the lead is ready for a callback or estimate. You step in only when the prospect is warm and ready to buy.",
+      "When someone calls your Call Backer number and you don't pick up, an AI text goes out within seconds. The lead gets a warm, professional message from your business name — and the conversation is tracked in your dashboard.",
     detail:
-      "Less time chasing, more time closing. Every contacted lead is logged in your dashboard.",
+      "You can still answer that number live too — it rings just like any phone. The AI only kicks in when you miss it.",
+  },
+  {
+    number: "05",
+    icon: UserCheck,
+    label: "AI Qualifies the Lead",
+    color: "text-pink-500",
+    bg: "bg-pink-50",
+    border: "border-pink-100",
+    description:
+      "The AI keeps the conversation going, asks the right questions, and figures out the job scope, location, and urgency — all over text. Hot leads get flagged at the top of your dashboard.",
+    detail:
+      "You only step in when the lead is warm and ready. No more chasing cold calls.",
+  },
+  {
+    number: "06",
+    icon: Calendar,
+    label: "You Close the Job",
+    color: "text-teal-500",
+    bg: "bg-teal-50",
+    border: "border-teal-100",
+    description:
+      "Once a lead is qualified, you give them a call back or set up an estimate. Every lead, message, and status is logged in your dashboard — clean and organized.",
+    detail: "Less time chasing, more time closing. Every lead accounted for.",
   },
 ];
 
-// ── Why It Matters ──────────────────────────────────────────────────────────
+// ── How the Phone Routing Works ──────────────────────────────────────────────
+const ROUTING_POINTS = [
+  {
+    icon: Phone,
+    title: "You Get a Dedicated Business Number",
+    body: "Call Backer gives you a real local phone number powered by Twilio (the same tech behind major apps like Uber and Airbnb). This is the number you put on your ads.",
+  },
+  {
+    icon: Shield,
+    title: "Your Personal Number Stays the Same",
+    body: "Nothing changes with your real phone. You keep your number, your contacts, your carrier — everything. Call Backer runs alongside your phone, not through it.",
+  },
+  {
+    icon: Megaphone,
+    title: "Old Posters? No Worries",
+    body: "If you have existing yard signs, flyers, or truck wraps with your personal number — those still work fine. Calls to your old number ring you directly as always. Only the new Call Backer number feeds the system.",
+  },
+  {
+    icon: Zap,
+    title: "Miss a Call → AI Texts Instantly",
+    body: "The only difference: when a call to your Call Backer number goes unanswered, the AI fires off a text within seconds. If you pick up, it's just a normal phone call.",
+  },
+];
+
+// ── Why It Matters ───────────────────────────────────────────────────────────
 const BENEFITS = [
   {
     icon: Zap,
@@ -113,7 +163,7 @@ const BENEFITS = [
   },
 ];
 
-// ── Page ────────────────────────────────────────────────────────────────────
+// ── Page ─────────────────────────────────────────────────────────────────────
 const HowItWorks = () => {
   return (
     <div className="min-h-screen bg-[#FAFAFA] font-sans">
@@ -121,7 +171,6 @@ const HowItWorks = () => {
 
       {/* ── Hero ── */}
       <section className="relative pt-36 pb-20 px-4 overflow-hidden">
-        {/* decorative blobs */}
         <div className="absolute top-[-10%] left-[-10%] w-[70vw] h-[70vw] rounded-full bg-gradient-to-br from-[#E0CCF7] to-transparent opacity-40 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 right-[-10%] w-[60vw] h-[60vw] rounded-full bg-gradient-to-tl from-[#D4E4F7] to-transparent opacity-30 blur-3xl pointer-events-none" />
 
@@ -133,18 +182,27 @@ const HowItWorks = () => {
             </h1>
 
             <p className="text-lg text-gray-500 max-w-xl mx-auto leading-relaxed font-light">
-              Call Backer runs a quiet, automatic system in the background of your
-              business. Here's exactly what happens every time you miss a call.
+              Call Backer runs quietly in the background of your business — no tech skills needed, no changes to your phone. Here's exactly how it works from sign-up to your first booked lead.
             </p>
           </motion.div>
         </div>
       </section>
 
-      {/* ── Steps ── */}
-      <section className="relative px-4 pb-24 mt-10 max-w-5xl mx-auto">
+      {/* ── Getting Started Steps ── */}
+      <section className="relative px-4 pb-24 mt-4 max-w-5xl mx-auto">
+        <motion.div {...fadeUp(0)} className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-medium text-[#111] tracking-tight mb-4">
+            Getting started.{" "}
+            <span className="italic font-serif text-gray-400">Step by step.</span>
+          </h2>
+          <p className="text-gray-500 max-w-lg mx-auto font-light">
+            From sign-up to your first automated lead follow-up — here's the full picture.
+          </p>
+        </motion.div>
+
         <div className="flex flex-col gap-6">
-          {STEPS.map((step, i) => (
-            <motion.div key={step.number} {...fadeUp(i * 0.08)}>
+          {SETUP_STEPS.map((step, i) => (
+            <motion.div key={step.number} {...fadeUp(i * 0.07)}>
               <Card>
                 <div className="flex flex-col sm:flex-row gap-6 items-start">
                   {/* Number + icon */}
@@ -157,8 +215,7 @@ const HowItWorks = () => {
                     >
                       <step.icon className={`w-5 h-5 ${step.color}`} strokeWidth={1.75} />
                     </div>
-                    {/* connector line */}
-                    {i < STEPS.length - 1 && (
+                    {i < SETUP_STEPS.length - 1 && (
                       <div className="hidden sm:flex flex-col items-center">
                         <div className="w-px h-8 bg-gradient-to-b from-gray-200 to-transparent mt-2" />
                         <ArrowRight className="w-3 h-3 text-gray-200 rotate-90 -mt-1" />
@@ -186,6 +243,39 @@ const HowItWorks = () => {
         </div>
       </section>
 
+      {/* ── How the Phone Routing Works ── */}
+      <section className="px-4 pb-24 max-w-5xl mx-auto">
+        <motion.div {...fadeUp(0)} className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-medium text-[#111] tracking-tight mb-4">
+            How the number routing works.{" "}
+            <span className="italic font-serif text-gray-400">Plain and simple.</span>
+          </h2>
+          <p className="text-gray-500 max-w-lg mx-auto font-light">
+            Your personal phone doesn't change. Your existing marketing can stay up. Here's why.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {ROUTING_POINTS.map((r, i) => (
+            <motion.div key={r.title} {...fadeUp(i * 0.07)}>
+              <Card className="h-full">
+                <div className="flex flex-col gap-4">
+                  <div className="p-3 bg-gray-50 rounded-2xl border border-gray-100 w-fit">
+                    <r.icon className="w-5 h-5 text-gray-900" strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-medium text-gray-900 tracking-tight mb-1.5">
+                      {r.title}
+                    </h3>
+                    <p className="text-gray-500 text-sm leading-relaxed">{r.body}</p>
+                  </div>
+                </div>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
       {/* ── Why It Matters ── */}
       <section className="px-4 pb-24 max-w-5xl mx-auto">
         <motion.div {...fadeUp(0)} className="text-center mb-12">
@@ -203,10 +293,8 @@ const HowItWorks = () => {
             <motion.div key={b.title} {...fadeUp(i * 0.07)}>
               <Card className="h-full">
                 <div className="flex flex-col gap-4">
-                  <div className="flex justify-between items-start">
-                    <div className="p-3 bg-gray-50 rounded-2xl border border-gray-100">
-                      <b.icon className="w-5 h-5 text-gray-900" strokeWidth={1.5} />
-                    </div>
+                  <div className="p-3 bg-gray-50 rounded-2xl border border-gray-100 w-fit">
+                    <b.icon className="w-5 h-5 text-gray-900" strokeWidth={1.5} />
                   </div>
                   <div>
                     <h3 className="text-lg font-medium text-gray-900 tracking-tight mb-1.5">
@@ -229,10 +317,13 @@ const HowItWorks = () => {
         >
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[250px] bg-gradient-to-tr from-purple-100/50 to-blue-100/50 blur-[60px] rounded-full pointer-events-none" />
           <div className="relative">
-            <h2 className="text-4xl md:text-5xl font-medium text-[#111] tracking-tight mb-8 leading-[1.1]">
+            <h2 className="text-4xl md:text-5xl font-medium text-[#111] tracking-tight mb-4 leading-[1.1]">
               Ready to stop missing{" "}
               <span className="italic font-serif text-gray-400">opportunities?</span>
             </h2>
+            <p className="text-gray-500 mb-8 font-light max-w-md mx-auto">
+              Sign up today and we'll have your system live within 1–2 weeks. No contracts, no tech headaches.
+            </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 to="/sign-up"
@@ -249,7 +340,7 @@ const HowItWorks = () => {
               </Link>
             </div>
             <p className="mt-6 text-xs text-gray-400 font-medium">
-              Start letting calls go to your competitors.
+              Live in 1–2 weeks. Nothing changes with your current phone or number.
             </p>
           </div>
         </motion.div>
