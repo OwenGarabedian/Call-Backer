@@ -57,14 +57,14 @@ const SETUP_STEPS = [
   {
     number: "02",
     icon: Wrench,
-    label: "We Build It for You (1–2 Weeks)",
+    label: "Automated Setup (1–2 Weeks)",
     color: "text-blue-500",
     bg: "bg-blue-50",
     border: "border-blue-100",
     description:
-      "Our team sets everything up on the back end during your 1–2 week onboarding window. We configure your AI, train it on your business, and set up your dedicated Call Backer number. You don't touch a thing.",
+      "During your 1–2 week onboarding window, your Call Backer number is spun up automatically through Twilio — the same platform that powers SMS for some of the biggest apps in the world. Twilio works directly with major carriers, so your texts are delivered as legitimate business messages, never flagged as spam.",
     detail:
-      "We handle 100% of the technical setup. You'll get a heads-up when you're live.",
+      "No manual setup on our end — it's all automated. You'll get a heads-up when you're live and ready to go.",
   },
   {
     number: "03",
